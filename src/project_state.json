@@ -1,0 +1,365 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 7,
+  "summary": "Tournament Khelba - A Free Fire tournament management platform sponsored by Code 11, featuring user registration, tournament listings (Solo/Duo/Squad), manual wallet system, custom room management, leaderboards, and admin panel for esports tournaments in Bangladesh",
+  "architectural_notes": [
+    "Backend built with Motoko on Internet Computer",
+    "Frontend using React + TypeScript with Tailwind CSS",
+    "Authentication via Internet Identity (passkeys + social logins)",
+    "No real-time features - in-app updates only when users refresh",
+    "No direct payment gateway integration - manual tracking by admins",
+    "Manual Free Fire UID entry (no automatic verification from game servers)",
+    "Admin-uploaded match results and leaderboard management",
+    "Player profile creation is optional after authentication - users can browse without completing profile",
+    "Profile completion (Free Fire UID + player name) is mandatory before tournament registration",
+    "Squad/team system stores persistent teams with member management and squad-based registrations"
+  ],
+  "known_issues": [
+    "Cannot integrate with bKash/Nagad/Rocket payment gateways - requires manual payment tracking",
+    "No real-time push notifications or live chat capabilities",
+    "Cannot verify Free Fire UIDs automatically or pull data from game servers",
+    "Match results must be manually uploaded by admins or players"
+  ],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Notification bell icon with unread indicator dot for Header (notification-bell.dim_32x32.png)\n- Seven tier badge icons for ranking system: Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster badges with metallic textures (tier-bronze.dim_64x64.png, tier-silver.dim_64x64.png, tier-gold.dim_64x64.png, tier-platinum.dim_64x64.png, tier-diamond.dim_64x64.png, tier-master.dim_64x64.png, tier-grandmaster.dim_64x64.png)\n- Featured tournament badge icon with golden star or crown (featured-badge.dim_48x48.png)\n- Practice mode badge icon with training target or practice symbol (practice-badge.dim_48x48.png)\n- Verification level badge icons: checkmark for UID verified, shield for payment verified, star for fully verified (verify-uid.dim_32x32.png, verify-payment.dim_32x32.png, verify-full.dim_32x32.png)\n- Referral dashboard banner background with sharing and reward theme (referral-banner.dim_1200x400.png)",
+  "existing_features": [
+    {
+      "id": "feature-implement-user-authentication-system-using-internet-identity-that-allows-players-to-sign-up-and-sign-in-with-passkeys-and-social-logins",
+      "title": "Implement user authentication system using Internet Identity that allows players to sign up and sign in with passkeys and social logins",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-player-profile-system-that-stores-and-displays-free-fire-uid-manually-entered-player-statistics-including-total-tournaments-played-wins-kills-and-tournament-history",
+      "title": "Create player profile system that stores and displays Free Fire UID (manually entered), player statistics including total tournaments played, wins, kills, and tournament history",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-tournament-dashboard-that-lists-all-upcoming-tournaments-with-filters-for-solo-duo-and-squad-game-modes-displaying-entry-fee-prize-pool-start-date-and-time-available-slots-remaining-and-current-registration-status",
+      "title": "Build tournament dashboard that lists all upcoming tournaments with filters for Solo, Duo, and Squad game modes, displaying entry fee, prize pool, start date and time, available slots remaining, and current registration status",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-tournament-registration-system-that-allows-players-to-join-tournaments-deducts-entry-fee-from-their-wallet-balance-and-displays-custom-room-id-and-password-before-match-start-time",
+      "title": "Implement tournament registration system that allows players to join tournaments, deducts entry fee from their wallet balance, and displays custom room ID and password before match start time",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-manual-wallet-system-that-tracks-player-balance-displays-transaction-history-for-deposits-and-withdrawals-and-shows-pending-completed-status-for-each-transaction-admin-managed-outside-the-app",
+      "title": "Create manual wallet system that tracks player balance, displays transaction history for deposits and withdrawals, and shows pending/completed status for each transaction (admin-managed outside the app)",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-results-tracking-and-leaderboard-system-that-displays-tournament-results-after-admin-uploads-match-data-showing-player-rankings-kills-and-prize-distribution-for-each-tournament-plus-global-leaderboards-for-daily-weekly-and-monthly-performance",
+      "title": "Build results tracking and leaderboard system that displays tournament results after admin uploads match data, showing player rankings, kills, and prize distribution for each tournament, plus global leaderboards for daily, weekly, and monthly performance",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-comprehensive-admin-panel-that-allows-admins-to-create-and-edit-tournaments-with-all-details-mode-entry-fee-prize-pool-slots-date-time-room-credentials-manage-user-accounts-and-verify-free-fire-uids-approve-or-reject-wallet-deposit-and-withdrawal-requests-manually-credit-winnings-to-player-wallets-after-tournament-completion-and-view-all-transactions-and-user-activities",
+      "title": "Create comprehensive admin panel that allows admins to create and edit tournaments with all details (mode, entry fee, prize pool, slots, date/time, room credentials), manage user accounts and verify Free Fire UIDs, approve or reject wallet deposit and withdrawal requests, manually credit winnings to player wallets after tournament completion, and view all transactions and user activities",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-integrate-code-11-sponsor-branding-throughout-the-platform-including-presented-by-code-11-text-on-splash-screen-home-page-and-tournament-pages-code-11-logo-placement-in-header-or-footer-and-sponsor-banner-on-key-pages",
+      "title": "Integrate Code 11 sponsor branding throughout the platform including 'Presented by Code 11' text on splash screen, home page, and tournament pages, Code 11 logo placement in header or footer, and sponsor banner on key pages",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-design-and-implement-a-dark-gaming-theme-with-neon-highlights-and-vibrant-esports-focused-visual-style-using-energetic-colors-like-neon-green-cyan-magenta-and-orange-against-dark-backgrounds-with-bold-typography-and-gaming-inspired-ui-elements-that-create-an-immersive-tournament-atmosphere",
+      "title": "Design and implement a dark gaming theme with neon highlights and vibrant esports-focused visual style, using energetic colors like neon green, cyan, magenta, and orange against dark backgrounds, with bold typography and gaming-inspired UI elements that create an immersive tournament atmosphere",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-profilesetupmodal-from-appearing-automatically-after-authentication-so-that-players-can-skip-profile-creation-and-browse-tournaments-freely",
+      "title": "Remove the ProfileSetupModal from appearing automatically after authentication so that players can skip profile creation and browse tournaments freely",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-frontend-enforcement-that-shows-the-profilesetupmodal-when-a-user-without-a-complete-profile-attempts-to-register-for-a-tournament-blocking-the-registration-until-profile-is-completed",
+      "title": "Implement frontend enforcement that shows the ProfileSetupModal when a user without a complete profile attempts to register for a tournament, blocking the registration until profile is completed",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-profile-query-hooks-to-fetch-and-cache-profile-completeness-status-so-tournament-registration-flows-can-check-it-efficiently",
+      "title": "Update the profile query hooks to fetch and cache profile completeness status so tournament registration flows can check it efficiently",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-notifications-center-page-accessible-from-the-header-that-displays-tournament-related-updates-including-tournament-starting-in-30-minutes-results-are-now-available-new-tournament-created-and-registration-confirmed-notifications-with-timestamp-read-unread-status-and-notification-type-icons-updating-when-users-refresh-the-page",
+      "title": "Create a notifications center page accessible from the Header that displays tournament-related updates including 'Tournament starting in 30 minutes', 'Results are now available', 'New tournament created', and 'Registration confirmed' notifications with timestamp, read/unread status, and notification type icons, updating when users refresh the page",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-player-statistics-dashboard-page-that-displays-comprehensive-performance-metrics-including-total-tournaments-played-win-rate-percentage-average-kills-per-match-total-earnings-and-favorite-game-mode-with-visual-charts-using-a-charting-library-replacing-the-current-mock-based-profilepage-statistics-section",
+      "title": "Build a player statistics dashboard page that displays comprehensive performance metrics including total tournaments played, win rate percentage, average kills per match, total earnings, and favorite game mode with visual charts using a charting library, replacing the current mock-based ProfilePage statistics section",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-tournament-search-and-filtering-functionality-to-the-tournamentdashboard-that-allows-users-to-search-tournaments-by-name-or-description-filter-by-prize-pool-range-using-min-max-inputs-filter-by-date-range-using-date-pickers-and-filter-by-entry-fee-brackets-with-preset-options-like-free-0-50-bdt-50-100-bdt-100-bdt-with-all-filters-working-together",
+      "title": "Add tournament search and filtering functionality to the TournamentDashboard that allows users to search tournaments by name or description, filter by prize pool range using min/max inputs, filter by date range using date pickers, and filter by entry fee brackets with preset options like 'Free', '0-50 BDT', '50-100 BDT', '100+ BDT', with all filters working together",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-squad-team-management-system-that-allows-players-to-create-persistent-squads-with-a-team-name-and-tag-invite-members-by-entering-their-player-name-or-free-fire-uid-accept-or-decline-squad-invitations-view-squad-member-list-with-roles-captain-member-track-squad-performance-metrics-including-total-tournaments-played-together-and-squad-win-rate-and-register-as-a-complete-squad-for-squad-mode-tournaments",
+      "title": "Implement a squad/team management system that allows players to create persistent squads with a team name and tag, invite members by entering their player name or Free Fire UID, accept or decline squad invitations, view squad member list with roles (captain/member), track squad performance metrics including total tournaments played together and squad win rate, and register as a complete squad for Squad-mode tournaments",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-player-ranking-system-with-tier-badges-bronze-silver-gold-platinum-diamond-master-grandmaster-calculated-based-on-tournament-performance-metrics-including-total-wins-win-rate-average-kills-and-total-tournaments-played-display-the-tier-badge-on-player-profiles-and-leaderboards-and-show-rank-progression-bar-indicating-progress-toward-the-next-tier",
+      "title": "Create a player ranking system with tier badges (Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster) calculated based on tournament performance metrics including total wins, win rate, average kills, and total tournaments played, display the tier badge on player profiles and leaderboards, and show rank progression bar indicating progress toward the next tier",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-tournament-comments-section-on-the-tournamentdetailpage-where-registered-participants-can-post-comments-and-questions-view-all-comments-with-author-name-and-timestamp-sorted-by-newest-first-and-see-comment-updates-when-refreshing-the-page-with-backend-storage-per-tournament",
+      "title": "Add a tournament comments section on the TournamentDetailPage where registered participants can post comments and questions, view all comments with author name and timestamp sorted by newest first, and see comment updates when refreshing the page, with backend storage per tournament",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-featured-tournaments-section-on-the-tournamentdashboard-that-displays-premium-tournaments-with-higher-prize-pools-and-special-styling-including-a-featured-badge-golden-highlight-border-and-code-11-or-partner-sponsor-logo-with-admin-ability-to-mark-tournaments-as-featured-in-the-admin-panel",
+      "title": "Create a Featured Tournaments section on the TournamentDashboard that displays premium tournaments with higher prize pools and special styling including a 'Featured' badge, golden highlight border, and Code 11 or partner sponsor logo, with admin ability to mark tournaments as featured in the admin panel",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-practice-mode-section-on-the-tournamentdashboard-listing-zero-entry-fee-practice-matches-where-players-can-test-their-skills-with-practice-matches-having-similar-details-as-regular-tournaments-but-clearly-marked-as-practice-mode-with-no-entry-fee-and-no-prize-pool-allowing-players-to-register-without-wallet-deduction",
+      "title": "Add a Practice Mode section on the TournamentDashboard listing zero entry fee practice matches where players can test their skills, with practice matches having similar details as regular tournaments but clearly marked as 'Practice Mode' with no entry fee and no prize pool, allowing players to register without wallet deduction",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-referral-system-where-each-player-receives-a-unique-referral-code-can-share-it-with-friends-earns-50-bdt-bonus-wallet-credits-when-a-referred-friend-completes-their-first-tournament-and-can-view-referral-statistics-including-total-referrals-and-total-earnings-from-referrals-on-a-referral-dashboard-page",
+      "title": "Implement a referral system where each player receives a unique referral code, can share it with friends, earns 50 BDT bonus wallet credits when a referred friend completes their first tournament, and can view referral statistics including total referrals and total earnings from referrals on a referral dashboard page",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-bulk-tournament-creation-functionality-to-the-admin-tournamentmanagementpanel-that-allows-admins-to-create-multiple-tournaments-at-once-by-specifying-base-tournament-details-and-a-recurrence-pattern-daily-weekly-with-number-of-occurrences-automatically-generating-tournaments-with-incremented-dates-and-sequential-naming",
+      "title": "Add bulk tournament creation functionality to the admin TournamentManagementPanel that allows admins to create multiple tournaments at once by specifying base tournament details and a recurrence pattern (daily, weekly) with number of occurrences, automatically generating tournaments with incremented dates and sequential naming",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-player-verification-system-with-multiple-verification-levels-unverified-uid-verified-payment-verified-fully-verified-displayed-as-badges-on-player-profiles-and-leaderboards-with-admin-panel-controls-to-verify-free-fire-uid-and-payment-history-and-display-verification-level-in-tournament-participant-lists",
+      "title": "Create a player verification system with multiple verification levels (Unverified, UID Verified, Payment Verified, Fully Verified) displayed as badges on player profiles and leaderboards, with admin panel controls to verify Free Fire UID and payment history, and display verification level in tournament participant lists",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-tournament-template-functionality-to-the-admin-tournamentmanagementpanel-allowing-admins-to-save-current-tournament-configurations-as-reusable-templates-with-a-template-name-load-saved-templates-to-pre-fill-tournament-creation-form-edit-existing-templates-delete-templates-and-display-a-list-of-available-templates-with-template-details",
+      "title": "Add tournament template functionality to the admin TournamentManagementPanel allowing admins to save current tournament configurations as reusable templates with a template name, load saved templates to pre-fill tournament creation form, edit existing templates, delete templates, and display a list of available templates with template details",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "User registration and authentication with Internet Identity",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Player profile system with Free Fire UID linking and stats tracking",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Tournament dashboard with Solo/Duo/Squad listings showing entry fees, prizes, dates, and slots",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Manual wallet system for tracking deposits and withdrawals (admin-managed)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Custom room ID and password display for tournament participants",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Results tracking and leaderboard system (admin-uploaded match results)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Admin panel for tournament management, user verification, and payment tracking",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Code 11 sponsor branding integration throughout the platform",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Dark gaming theme with neon highlights and esports-focused design",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Make player profile creation optional after authentication, but enforce completion before tournament registration with Free Fire UID and player name required",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Add profile completeness check in the backend that verifies if a player has both Free Fire UID and player name filled before allowing tournament registration",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Tournament notifications center that displays updates (starting soon, results available) when players refresh",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Player statistics dashboard with charts showing win rate, average kills per match, earnings history, and favorite game modes",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Tournament search functionality and advanced filters for prize range, date range, and entry fee brackets",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Squad/team management system allowing players to create persistent squads, invite members, track squad performance, and register as a team for Squad tournaments",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Player ranking system with tier badges (Bronze, Silver, Gold, Diamond) based on tournament performance displayed on profiles",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Tournament comments section where participants can discuss and ask questions with updates appearing on page refresh",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Featured/Premium tournaments category with higher prizes for Code 11 or partner sponsorships",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Practice mode listings section for zero entry fee matches where players can test skills before paid tournaments",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Referral system where players earn bonus wallet credits for inviting friends who complete their first tournament",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Admin bulk tournament creation tool to create multiple similar tournaments at once (weekly recurring tournaments)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Player verification levels system (verified Free Fire UID, verified payment history) with trust badges",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Tournament templates allowing admins to save and reuse tournament configurations for faster future setup",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Tournament Khelba",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

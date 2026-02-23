@@ -1,0 +1,272 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-create-a-notifications-center-page-accessible-from-the-header-that-displays-tournament-related-updates-including-tournament-starting-in-30-minutes-results-are-now-available-new-tournament-created-and-registration-confirmed-notifications-with-timestamp-read-unread-status-and-notification-type-icons-updating-when-users-refresh-the-page",
+      "featureTitle": "Create a notifications center page accessible from the Header that displays tournament-related updates including 'Tournament starting in 30 minutes', 'Results are now available', 'New tournament created', and 'Registration confirmed' notifications with timestamp, read/unread status, and notification type icons, updating when users refresh the page",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/Header.tsx",
+        "frontend/src/components/notifications/NotificationsPage.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-14"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-a-player-statistics-dashboard-page-that-displays-comprehensive-performance-metrics-including-total-tournaments-played-win-rate-percentage-average-kills-per-match-total-earnings-and-favorite-game-mode-with-visual-charts-using-a-charting-library-replacing-the-current-mock-based-profilepage-statistics-section",
+      "featureTitle": "Build a player statistics dashboard page that displays comprehensive performance metrics including total tournaments played, win rate percentage, average kills per match, total earnings, and favorite game mode with visual charts using a charting library, replacing the current mock-based ProfilePage statistics section",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/Header.tsx",
+        "frontend/src/components/statistics/StatisticsDashboard.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-15"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-tournament-search-and-filtering-functionality-to-the-tournamentdashboard-that-allows-users-to-search-tournaments-by-name-or-description-filter-by-prize-pool-range-using-min-max-inputs-filter-by-date-range-using-date-pickers-and-filter-by-entry-fee-brackets-with-preset-options-like-free-0-50-bdt-50-100-bdt-100-bdt-with-all-filters-working-together",
+      "featureTitle": "Add tournament search and filtering functionality to the TournamentDashboard that allows users to search tournaments by name or description, filter by prize pool range using min/max inputs, filter by date range using date pickers, and filter by entry fee brackets with preset options like 'Free', '0-50 BDT', '50-100 BDT', '100+ BDT', with all filters working together",
+      "files": [
+        "frontend/src/components/tournaments/TournamentDashboard.tsx",
+        "frontend/src/components/tournaments/TournamentFilters.tsx",
+        "frontend/src/hooks/useTournamentFilters.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-16"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-a-squad-team-management-system-that-allows-players-to-create-persistent-squads-with-a-team-name-and-tag-invite-members-by-entering-their-player-name-or-free-fire-uid-accept-or-decline-squad-invitations-view-squad-member-list-with-roles-captain-member-track-squad-performance-metrics-including-total-tournaments-played-together-and-squad-win-rate-and-register-as-a-complete-squad-for-squad-mode-tournaments",
+      "featureTitle": "Implement a squad/team management system that allows players to create persistent squads with a team name and tag, invite members by entering their player name or Free Fire UID, accept or decline squad invitations, view squad member list with roles (captain/member), track squad performance metrics including total tournaments played together and squad win rate, and register as a complete squad for Squad-mode tournaments",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/Header.tsx",
+        "frontend/src/components/squads/CreateSquadModal.tsx",
+        "frontend/src/components/squads/InviteMemberModal.tsx",
+        "frontend/src/components/squads/SquadsPage.tsx",
+        "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-17"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-player-ranking-system-with-tier-badges-bronze-silver-gold-platinum-diamond-master-grandmaster-calculated-based-on-tournament-performance-metrics-including-total-wins-win-rate-average-kills-and-total-tournaments-played-display-the-tier-badge-on-player-profiles-and-leaderboards-and-show-rank-progression-bar-indicating-progress-toward-the-next-tier",
+      "featureTitle": "Create a player ranking system with tier badges (Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster) calculated based on tournament performance metrics including total wins, win rate, average kills, and total tournaments played, display the tier badge on player profiles and leaderboards, and show rank progression bar indicating progress toward the next tier",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-18"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-tournament-comments-section-on-the-tournamentdetailpage-where-registered-participants-can-post-comments-and-questions-view-all-comments-with-author-name-and-timestamp-sorted-by-newest-first-and-see-comment-updates-when-refreshing-the-page-with-backend-storage-per-tournament",
+      "featureTitle": "Add a tournament comments section on the TournamentDetailPage where registered participants can post comments and questions, view all comments with author name and timestamp sorted by newest first, and see comment updates when refreshing the page, with backend storage per tournament",
+      "files": [
+        "frontend/src/components/tournaments/CommentsSection.tsx",
+        "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-19"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-featured-tournaments-section-on-the-tournamentdashboard-that-displays-premium-tournaments-with-higher-prize-pools-and-special-styling-including-a-featured-badge-golden-highlight-border-and-code-11-or-partner-sponsor-logo-with-admin-ability-to-mark-tournaments-as-featured-in-the-admin-panel",
+      "featureTitle": "Create a Featured Tournaments section on the TournamentDashboard that displays premium tournaments with higher prize pools and special styling including a 'Featured' badge, golden highlight border, and Code 11 or partner sponsor logo, with admin ability to mark tournaments as featured in the admin panel",
+      "files": [
+        "frontend/src/components/tournaments/FeaturedTournamentsSection.tsx",
+        "frontend/src/components/tournaments/TournamentCard.tsx",
+        "frontend/src/components/tournaments/TournamentDashboard.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-20"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-practice-mode-section-on-the-tournamentdashboard-listing-zero-entry-fee-practice-matches-where-players-can-test-their-skills-with-practice-matches-having-similar-details-as-regular-tournaments-but-clearly-marked-as-practice-mode-with-no-entry-fee-and-no-prize-pool-allowing-players-to-register-without-wallet-deduction",
+      "featureTitle": "Add a Practice Mode section on the TournamentDashboard listing zero entry fee practice matches where players can test their skills, with practice matches having similar details as regular tournaments but clearly marked as 'Practice Mode' with no entry fee and no prize pool, allowing players to register without wallet deduction",
+      "files": [
+        "frontend/src/components/tournaments/PracticeModeSection.tsx",
+        "frontend/src/components/tournaments/TournamentCard.tsx",
+        "frontend/src/components/tournaments/TournamentDashboard.tsx",
+        "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-21"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-a-referral-system-where-each-player-receives-a-unique-referral-code-can-share-it-with-friends-earns-50-bdt-bonus-wallet-credits-when-a-referred-friend-completes-their-first-tournament-and-can-view-referral-statistics-including-total-referrals-and-total-earnings-from-referrals-on-a-referral-dashboard-page",
+      "featureTitle": "Implement a referral system where each player receives a unique referral code, can share it with friends, earns 50 BDT bonus wallet credits when a referred friend completes their first tournament, and can view referral statistics including total referrals and total earnings from referrals on a referral dashboard page",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/Header.tsx",
+        "frontend/src/components/referral/ReferralDashboard.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-22"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-bulk-tournament-creation-functionality-to-the-admin-tournamentmanagementpanel-that-allows-admins-to-create-multiple-tournaments-at-once-by-specifying-base-tournament-details-and-a-recurrence-pattern-daily-weekly-with-number-of-occurrences-automatically-generating-tournaments-with-incremented-dates-and-sequential-naming",
+      "featureTitle": "Add bulk tournament creation functionality to the admin TournamentManagementPanel that allows admins to create multiple tournaments at once by specifying base tournament details and a recurrence pattern (daily, weekly) with number of occurrences, automatically generating tournaments with incremented dates and sequential naming",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-23"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-player-verification-system-with-multiple-verification-levels-unverified-uid-verified-payment-verified-fully-verified-displayed-as-badges-on-player-profiles-and-leaderboards-with-admin-panel-controls-to-verify-free-fire-uid-and-payment-history-and-display-verification-level-in-tournament-participant-lists",
+      "featureTitle": "Create a player verification system with multiple verification levels (Unverified, UID Verified, Payment Verified, Fully Verified) displayed as badges on player profiles and leaderboards, with admin panel controls to verify Free Fire UID and payment history, and display verification level in tournament participant lists",
+      "files": [
+        "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-24"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-tournament-template-functionality-to-the-admin-tournamentmanagementpanel-allowing-admins-to-save-current-tournament-configurations-as-reusable-templates-with-a-template-name-load-saved-templates-to-pre-fill-tournament-creation-form-edit-existing-templates-delete-templates-and-display-a-list-of-available-templates-with-template-details",
+      "featureTitle": "Add tournament template functionality to the admin TournamentManagementPanel allowing admins to save current tournament configurations as reusable templates with a template name, load saved templates to pre-fill tournament creation form, edit existing templates, delete templates, and display a list of available templates with template details",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-25"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

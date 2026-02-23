@@ -1,0 +1,278 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-23T21:02:49.216Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 12,
+    "implemented": 12,
+    "items": [
+      {
+        "id": "REQ-14",
+        "summary": "Create a notifications center page accessible from the Header that displays tournament-related updates including 'Tournament starting in 30 minutes', 'Results are now available', 'New tournament created', and 'Registration confirmed' notifications with timestamp, read/unread status, and notification type icons, updating when users refresh the page",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/notification-bell.dim_32x32.png",
+          "frontend/src/components/notifications/NotificationsPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/layout/Header.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/notification-bell.dim_32x32.png",
+          "frontend/src/components/notifications/NotificationsPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/layout/Header.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-15",
+        "summary": "Build a player statistics dashboard page that displays comprehensive performance metrics including total tournaments played, win rate percentage, average kills per match, total earnings, and favorite game mode with visual charts using a charting library, replacing the current mock-based ProfilePage statistics section",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/statistics/StatisticsDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/profile/ProfilePage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/Header.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/statistics/StatisticsDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/Header.tsx"
+        ]
+      },
+      {
+        "id": "REQ-16",
+        "summary": "Add tournament search and filtering functionality to the TournamentDashboard that allows users to search tournaments by name or description, filter by prize pool range using min/max inputs, filter by date range using date pickers, and filter by entry fee brackets with preset options like 'Free', '0-50 BDT', '50-100 BDT', '100+ BDT', with all filters working together",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/tournaments/TournamentFilters.tsx",
+          "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "frontend/src/hooks/useTournamentFilters.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/tournaments/TournamentFilters.tsx",
+          "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "frontend/src/hooks/useTournamentFilters.ts"
+        ]
+      },
+      {
+        "id": "REQ-17",
+        "summary": "Implement a squad/team management system that allows players to create persistent squads with a team name and tag, invite members by entering their player name or Free Fire UID, accept or decline squad invitations, view squad member list with roles (captain/member), track squad performance metrics including total tournaments played together and squad win rate, and register as a complete squad for Squad-mode tournaments",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/squads/SquadsPage.tsx",
+          "frontend/src/components/squads/CreateSquadModal.tsx",
+          "frontend/src/components/squads/InviteMemberModal.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/Header.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/squads/SquadsPage.tsx",
+          "frontend/src/components/squads/CreateSquadModal.tsx",
+          "frontend/src/components/squads/InviteMemberModal.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/Header.tsx"
+        ]
+      },
+      {
+        "id": "REQ-18",
+        "summary": "Create a player ranking system with tier badges (Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster) calculated based on tournament performance metrics including total wins, win rate, average kills, and total tournaments played, display the tier badge on player profiles and leaderboards, and show rank progression bar indicating progress toward the next tier",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/tier-bronze.dim_64x64.png",
+          "frontend/public/assets/generated/tier-silver.dim_64x64.png",
+          "frontend/public/assets/generated/tier-gold.dim_64x64.png",
+          "frontend/public/assets/generated/tier-platinum.dim_64x64.png",
+          "frontend/public/assets/generated/tier-diamond.dim_64x64.png",
+          "frontend/public/assets/generated/tier-master.dim_64x64.png",
+          "frontend/public/assets/generated/tier-grandmaster.dim_64x64.png",
+          "frontend/src/components/rankings/TierBadge.tsx",
+          "frontend/src/components/rankings/RankProgressBar.tsx",
+          "frontend/src/components/profile/ProfilePage.tsx",
+          "frontend/src/components/leaderboard/LeaderboardPage.tsx",
+          "frontend/src/components/results/TournamentResultsPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/utils/rankingSystem.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-19",
+        "summary": "Add a tournament comments section on the TournamentDetailPage where registered participants can post comments and questions, view all comments with author name and timestamp sorted by newest first, and see comment updates when refreshing the page, with backend storage per tournament",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/tournaments/CommentsSection.tsx",
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/tournaments/CommentsSection.tsx",
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-20",
+        "summary": "Create a Featured Tournaments section on the TournamentDashboard that displays premium tournaments with higher prize pools and special styling including a 'Featured' badge, golden highlight border, and Code 11 or partner sponsor logo, with admin ability to mark tournaments as featured in the admin panel",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/featured-badge.dim_48x48.png",
+          "frontend/src/components/tournaments/FeaturedTournamentsSection.tsx",
+          "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "frontend/src/components/tournaments/TournamentCard.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/featured-badge.dim_48x48.png",
+          "frontend/src/components/tournaments/FeaturedTournamentsSection.tsx",
+          "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "frontend/src/components/tournaments/TournamentCard.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-21",
+        "summary": "Add a Practice Mode section on the TournamentDashboard listing zero entry fee practice matches where players can test their skills, with practice matches having similar details as regular tournaments but clearly marked as 'Practice Mode' with no entry fee and no prize pool, allowing players to register without wallet deduction",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/practice-badge.dim_48x48.png",
+          "frontend/src/components/tournaments/PracticeModeSection.tsx",
+          "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "frontend/src/components/tournaments/TournamentCard.tsx",
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/practice-badge.dim_48x48.png",
+          "frontend/src/components/tournaments/PracticeModeSection.tsx",
+          "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "frontend/src/components/tournaments/TournamentCard.tsx",
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-22",
+        "summary": "Implement a referral system where each player receives a unique referral code, can share it with friends, earns 50 BDT bonus wallet credits when a referred friend completes their first tournament, and can view referral statistics including total referrals and total earnings from referrals on a referral dashboard page",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/referral-banner.dim_1200x400.png",
+          "frontend/src/components/referral/ReferralDashboard.tsx",
+          "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/wallet/TransactionList.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/Header.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/referral-banner.dim_1200x400.png",
+          "frontend/src/components/referral/ReferralDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/Header.tsx"
+        ]
+      },
+      {
+        "id": "REQ-23",
+        "summary": "Add bulk tournament creation functionality to the admin TournamentManagementPanel that allows admins to create multiple tournaments at once by specifying base tournament details and a recurrence pattern (daily, weekly) with number of occurrences, automatically generating tournaments with incremented dates and sequential naming",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/admin/BulkTournamentCreationModal.tsx",
+          "frontend/src/components/admin/TournamentManagementPanel.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/utils/bulkTournamentGenerator.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-24",
+        "summary": "Create a player verification system with multiple verification levels (Unverified, UID Verified, Payment Verified, Fully Verified) displayed as badges on player profiles and leaderboards, with admin panel controls to verify Free Fire UID and payment history, and display verification level in tournament participant lists",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/verify-uid.dim_32x32.png",
+          "frontend/public/assets/generated/verify-payment.dim_32x32.png",
+          "frontend/public/assets/generated/verify-full.dim_32x32.png",
+          "frontend/src/components/verification/VerificationBadge.tsx",
+          "frontend/src/components/profile/ProfilePage.tsx",
+          "frontend/src/components/leaderboard/LeaderboardPage.tsx",
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/components/admin/UserManagementPanel.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-25",
+        "summary": "Add tournament template functionality to the admin TournamentManagementPanel allowing admins to save current tournament configurations as reusable templates with a template name, load saved templates to pre-fill tournament creation form, edit existing templates, delete templates, and display a list of available templates with template details",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/admin/TournamentTemplatesPanel.tsx",
+          "frontend/src/components/admin/SaveTemplateModal.tsx",
+          "frontend/src/components/admin/TournamentManagementPanel.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/admin/AdminDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/featured-badge.dim_48x48.png",
+    "frontend/public/assets/generated/notification-bell.dim_32x32.png",
+    "frontend/public/assets/generated/practice-badge.dim_48x48.png",
+    "frontend/public/assets/generated/referral-banner.dim_1200x400.png",
+    "frontend/public/assets/generated/tier-bronze.dim_64x64.png, tier-silver.dim_64x64.png, tier-gold.dim_64x64.png, tier-platinum.dim_64x64.png, tier-diamond.dim_64x64.png, tier-master.dim_64x64.png, tier-grandmaster.dim_64x64.png",
+    "frontend/public/assets/generated/verify-uid.dim_32x32.png, verify-payment.dim_32x32.png, verify-full.dim_32x32.png",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/layout/Header.tsx",
+    "frontend/src/components/notifications/NotificationsPage.tsx",
+    "frontend/src/components/referral/ReferralDashboard.tsx",
+    "frontend/src/components/squads/CreateSquadModal.tsx",
+    "frontend/src/components/squads/InviteMemberModal.tsx",
+    "frontend/src/components/squads/SquadsPage.tsx",
+    "frontend/src/components/statistics/StatisticsDashboard.tsx",
+    "frontend/src/components/tournaments/CommentsSection.tsx",
+    "frontend/src/components/tournaments/FeaturedTournamentsSection.tsx",
+    "frontend/src/components/tournaments/PracticeModeSection.tsx",
+    "frontend/src/components/tournaments/TournamentCard.tsx",
+    "frontend/src/components/tournaments/TournamentDashboard.tsx",
+    "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+    "frontend/src/components/tournaments/TournamentFilters.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/hooks/useTournamentFilters.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

@@ -1,0 +1,560 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Add comprehensive eSports features: notifications, squad management, rankings, comments, referral system, and admin tools",
+  "requirements": [
+    {
+      "id": "REQ-14",
+      "summary": "Create notifications center page with tournament updates, read/unread status, and timestamp display",
+      "acceptanceCriteria": [
+        "Notifications page is accessible via a bell icon or link in the Header component",
+        "Each notification displays message text, timestamp, and read/unread status",
+        "Frontend fetches and displays notifications using React Query",
+        "Notifications are marked as read when user views them",
+        "Notification types include tournament start reminders, results availability, registrations, and new tournaments"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/notification-bell.dim_32x32.png",
+          "operation": "create",
+          "description": "Use the generated notification bell icon image with unread indicator dot for the Header component. This is a static asset at frontend/public/assets/generated/notification-bell.dim_32x32.png."
+        },
+        {
+          "path": "frontend/src/components/notifications/NotificationsPage.tsx",
+          "operation": "create",
+          "description": "Create notifications center page component displaying tournament-related notifications with type icons, message text, timestamp, and read/unread status. Support notification types: tournament starting, results available, new tournament, registration confirmed. Include mark-as-read functionality on notification click. Use React Query to fetch notifications and invalidate on mark-as-read mutations."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add React Query hooks for notifications: useGetNotifications to fetch user's notifications with read/unread status, useMarkNotificationAsRead mutation to mark individual notifications as read. Include notification type, message, timestamp, and read status in the data structure."
+        },
+        {
+          "path": "frontend/src/components/layout/Header.tsx",
+          "operation": "modify",
+          "description": "Add notification bell icon with unread count badge to the Header navigation. Use the generated notification-bell.dim_32x32.png image from frontend/public/assets/generated/notification-bell.dim_32x32.png. Link the bell icon to the notifications page route. Display unread notification count badge when count > 0. Fetch unread count using React Query hook."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route definition for /notifications path that renders NotificationsPage component. Ensure route is protected and requires authentication."
+        }
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "summary": "Build player statistics dashboard with performance metrics, win rate charts, kills, earnings history, and favorite game mode",
+      "acceptanceCriteria": [
+        "Statistics dashboard shows total tournaments played, wins, win rate percentage",
+        "Average kills per match calculated from tournament results",
+        "Total earnings displayed from wallet transaction history",
+        "Favorite game mode determined by most-played tournament type (Solo/Duo/Squad)",
+        "Visual charts display win rate trend, kills per tournament, and earnings over time",
+        "Dashboard is accessible from the profile dropdown or navigation menu"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/statistics/StatisticsDashboard.tsx",
+          "operation": "create",
+          "description": "Create comprehensive player statistics dashboard component displaying: total tournaments played, win count, win rate percentage, average kills per match, total earnings, and favorite game mode. Include visual charts using a charting library (recharts or chart.js) for: win rate trend over time, kills per tournament bar chart, and earnings history line chart. Use grid layout for stat cards and charts. Fetch aggregated statistics data via React Query hook."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetPlayerStatistics React Query hook to fetch aggregated player performance data including: total tournaments, wins, win rate, average kills, total earnings, favorite game mode, and historical data arrays for charts (win rate trend, kills per tournament, earnings over time). Structure data to support chart rendering."
+        },
+        {
+          "path": "frontend/src/components/profile/ProfilePage.tsx",
+          "operation": "modify",
+          "description": "Replace the current mock-based statistics section with a link or button to navigate to the StatisticsDashboard page. Remove inline mock stats display and add a 'View Detailed Statistics' button that routes to /statistics."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route definition for /statistics path that renders StatisticsDashboard component. Ensure route is protected and requires authentication."
+        },
+        {
+          "path": "frontend/src/components/layout/Header.tsx",
+          "operation": "modify",
+          "description": "Add 'Statistics' menu item to the user profile dropdown menu linking to /statistics page. Position it between 'Profile' and 'Logout' options."
+        }
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "summary": "Add tournament search and filtering by name, prize pool range, date range, and entry fee brackets to TournamentDashboard",
+      "acceptanceCriteria": [
+        "Search input field filters tournaments by name or description in real-time",
+        "Prize pool filter with min and max number inputs",
+        "Date range filter with start date and end date pickers",
+        "Entry fee filter with preset bracket buttons (Free, 0-50, 50-100, 100+)",
+        "All filters can be applied simultaneously and tournaments update accordingly",
+        "Clear filters button resets all filters to default state",
+        "Filtered count displays 'Showing X of Y tournaments'"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/tournaments/TournamentFilters.tsx",
+          "operation": "create",
+          "description": "Create tournament filters component with: search input (filters by name/description), prize pool range inputs (min/max), date range pickers (start/end date), entry fee bracket buttons (Free, 0-50 BDT, 50-100 BDT, 100+ BDT), and clear filters button. Support multi-select for fee brackets. Emit filter state changes via props callback. Display filtered count as 'Showing X of Y tournaments'."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "operation": "modify",
+          "description": "Integrate TournamentFilters component above the tournament grid. Implement filter logic that applies search, prize range, date range, and entry fee filters simultaneously to the tournament list. Update displayed tournaments based on active filters. Pass total and filtered tournament counts to filters component. Maintain existing mode filter tabs functionality alongside new filters."
+        },
+        {
+          "path": "frontend/src/hooks/useTournamentFilters.ts",
+          "operation": "create",
+          "description": "Create custom hook to manage tournament filter state including: search query, prize pool min/max, date range start/end, selected entry fee brackets. Provide filter state, update functions, clear filters function, and filtered tournament computation logic. Return filtered tournaments array and counts."
+        }
+      ]
+    },
+    {
+      "id": "REQ-17",
+      "summary": "Implement squad/team management system with team creation, member invitations, squad performance tracking, and squad tournament registration",
+      "acceptanceCriteria": [
+        "Players can create a new squad with team name and optional team tag",
+        "Squad creator becomes the captain with admin privileges",
+        "Captain can invite players by entering their player name or Free Fire UID",
+        "Invited players receive squad invitations in their notifications",
+        "Players can accept or decline squad invitations",
+        "Squad page displays all members with their roles, join date, and individual stats",
+        "Squad performance section shows total tournaments played together, squad wins, and squad win rate",
+        "When registering for Squad-mode tournaments, players can choose to register as their squad",
+        "Squad registration deducts entry fee from captain's wallet and registers all squad members",
+        "Squad can be disbanded by captain or members can leave the squad"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/squads/SquadsPage.tsx",
+          "operation": "create",
+          "description": "Create squads management page displaying user's current squad (if any) or create squad form. Show squad details including: team name, tag, captain name, member list with roles and join dates, squad performance metrics (tournaments played, wins, win rate). Include buttons for captain: invite members, disband squad. Include leave squad button for members. Display squad invitations section with accept/decline actions."
+        },
+        {
+          "path": "frontend/src/components/squads/CreateSquadModal.tsx",
+          "operation": "create",
+          "description": "Create modal dialog for squad creation with form inputs: team name (required), team tag (optional, 3-5 characters). Include create button that calls useCreateSquad mutation and closes modal on success. Show validation errors inline."
+        },
+        {
+          "path": "frontend/src/components/squads/InviteMemberModal.tsx",
+          "operation": "create",
+          "description": "Create modal dialog for inviting squad members with input field to enter player name or Free Fire UID. Include search/validate functionality and invite button that calls useInviteSquadMember mutation. Show success message on invitation sent. Only accessible to squad captains."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add squad-related React Query hooks: useGetCurrentSquad (fetch user's squad with members and performance), useGetSquadInvitations (fetch pending invitations), useCreateSquad mutation (create new squad), useInviteSquadMember mutation (send invitation), useAcceptSquadInvitation mutation (accept invitation), useDeclineSquadInvitation mutation (decline invitation), useDisbandSquad mutation (captain only), useLeaveSquad mutation (member only). Include invalidation logic to refresh squad data after mutations."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "For Squad-mode tournaments, add squad registration option alongside individual registration. Display squad selection dropdown if user is in a squad. Include validation that all squad members have complete profiles before allowing squad registration. Show entry fee total (entry fee * squad size) and note that fee is deducted from captain's wallet. Call useRegisterSquadForTournament mutation for squad registration."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route definition for /squads path that renders SquadsPage component. Ensure route is protected and requires authentication."
+        },
+        {
+          "path": "frontend/src/components/layout/Header.tsx",
+          "operation": "modify",
+          "description": "Add 'My Squad' navigation link to the main menu between 'Leaderboard' and 'Wallet' that routes to /squads page."
+        }
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "summary": "Create player ranking system with tier badges (Bronze to Grandmaster), display on profiles and leaderboards, and show rank progression bar",
+      "acceptanceCriteria": [
+        "Seven tier levels: Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster",
+        "Each tier has a unique badge icon and color scheme",
+        "Player profile displays current tier badge prominently",
+        "Tier badge appears next to player name in leaderboards and tournament results",
+        "Rank progression bar shows percentage progress toward next tier",
+        "Rank requirements are clearly documented (e.g., Gold requires 10 wins and 60% win rate)",
+        "Player rank updates automatically when new tournament results are uploaded by admin"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/tier-bronze.dim_64x64.png",
+          "operation": "create",
+          "description": "Use the generated Bronze tier badge icon with metallic texture. This is a static asset at frontend/public/assets/generated/tier-bronze.dim_64x64.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/tier-silver.dim_64x64.png",
+          "operation": "create",
+          "description": "Use the generated Silver tier badge icon with metallic texture. This is a static asset at frontend/public/assets/generated/tier-silver.dim_64x64.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/tier-gold.dim_64x64.png",
+          "operation": "create",
+          "description": "Use the generated Gold tier badge icon with metallic texture. This is a static asset at frontend/public/assets/generated/tier-gold.dim_64x64.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/tier-platinum.dim_64x64.png",
+          "operation": "create",
+          "description": "Use the generated Platinum tier badge icon with metallic texture. This is a static asset at frontend/public/assets/generated/tier-platinum.dim_64x64.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/tier-diamond.dim_64x64.png",
+          "operation": "create",
+          "description": "Use the generated Diamond tier badge icon with metallic texture. This is a static asset at frontend/public/assets/generated/tier-diamond.dim_64x64.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/tier-master.dim_64x64.png",
+          "operation": "create",
+          "description": "Use the generated Master tier badge icon with metallic texture. This is a static asset at frontend/public/assets/generated/tier-master.dim_64x64.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/tier-grandmaster.dim_64x64.png",
+          "operation": "create",
+          "description": "Use the generated Grandmaster tier badge icon with metallic texture. This is a static asset at frontend/public/assets/generated/tier-grandmaster.dim_64x64.png."
+        },
+        {
+          "path": "frontend/src/components/rankings/TierBadge.tsx",
+          "operation": "create",
+          "description": "Create reusable tier badge component that displays the appropriate tier icon (Bronze through Grandmaster) with tier name and color scheme. Accept tier level as prop. Use generated tier badge images from frontend/public/assets/generated/tier-*.dim_64x64.png. Include tooltip showing tier requirements on hover. Support multiple sizes (small, medium, large)."
+        },
+        {
+          "path": "frontend/src/components/rankings/RankProgressBar.tsx",
+          "operation": "create",
+          "description": "Create rank progression bar component showing percentage progress toward next tier. Display current tier badge, progress bar with percentage fill, and next tier badge. Include text showing requirements for next tier (e.g., '5 more wins needed'). Accept current tier, progress percentage, and requirements as props."
+        },
+        {
+          "path": "frontend/src/components/profile/ProfilePage.tsx",
+          "operation": "modify",
+          "description": "Add tier badge display prominently at the top of the profile page using TierBadge component. Include RankProgressBar component showing progress toward next tier. Fetch player rank data via useGetPlayerRank hook. Display tier name and requirements clearly."
+        },
+        {
+          "path": "frontend/src/components/leaderboard/LeaderboardPage.tsx",
+          "operation": "modify",
+          "description": "Add tier badge next to each player's name in the leaderboard table using TierBadge component in small size. Display tier alongside existing rank number, player name, and stats. Ensure badge fetched from player rank data."
+        },
+        {
+          "path": "frontend/src/components/results/TournamentResultsPage.tsx",
+          "operation": "modify",
+          "description": "Add tier badge next to each player's name in tournament results using TierBadge component in small size. Display alongside player name, kills, and prize information."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetPlayerRank React Query hook to fetch player's current tier level, tier name, progress percentage toward next tier, and tier requirements. Add useGetRankRequirements hook to fetch tier system requirements documentation (wins, win rate, kills needed for each tier)."
+        },
+        {
+          "path": "frontend/src/utils/rankingSystem.ts",
+          "operation": "create",
+          "description": "Create utility functions for ranking system: getTierColor (returns color for tier), getTierName (returns display name), getTierIconPath (returns path to tier badge image), calculateTierProgress (computes progress percentage), getNextTierRequirements (returns requirements for next tier). Export tier level constants and type definitions."
+        }
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "summary": "Add tournament comments section on TournamentDetailPage for registered participants with comment posting, viewing, and timestamp display",
+      "acceptanceCriteria": [
+        "Comments section appears below tournament details on TournamentDetailPage",
+        "Only registered participants can post comments",
+        "Comment form includes text area and submit button",
+        "Comments display author's player name, timestamp, and comment text",
+        "Comments sorted by newest first",
+        "Page refresh fetches and displays new comments",
+        "Comment count badge shows total number of comments on the tournament",
+        "Comments persist across page reloads"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/tournaments/CommentsSection.tsx",
+          "operation": "create",
+          "description": "Create comments section component for tournament discussion. Display comment form (textarea and submit button) only if user is registered participant. Show list of comments with author name, timestamp, and comment text sorted by newest first. Include comment count badge. Use useGetTournamentComments and usePostComment hooks. Show empty state when no comments exist."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Integrate CommentsSection component below tournament details section. Pass tournament ID prop to CommentsSection. Ensure comments section is visible to all viewers but posting is restricted to registered participants."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetTournamentComments React Query hook to fetch comments for a specific tournament with author name, timestamp, and comment text. Add usePostComment mutation hook to post new comment to tournament, restricted to registered participants. Include invalidation to refresh comments list after posting."
+        }
+      ]
+    },
+    {
+      "id": "REQ-20",
+      "summary": "Create Featured Tournaments section on TournamentDashboard with special styling, sponsor logos, and admin marking capability",
+      "acceptanceCriteria": [
+        "Featured tournaments section appears above regular tournament listings",
+        "Featured tournaments display with golden or special highlight styling",
+        "Featured badge/label prominently displayed on featured tournament cards",
+        "Featured tournaments show sponsor logo (Code 11 or partner)",
+        "Featured tournaments have higher prize pools than regular tournaments",
+        "Featured section scrolls horizontally if multiple featured tournaments exist"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/featured-badge.dim_48x48.png",
+          "operation": "create",
+          "description": "Use the generated featured tournament badge icon with golden star or crown. This is a static asset at frontend/public/assets/generated/featured-badge.dim_48x48.png."
+        },
+        {
+          "path": "frontend/src/components/tournaments/FeaturedTournamentsSection.tsx",
+          "operation": "create",
+          "description": "Create featured tournaments section component displaying premium tournaments with special styling. Use horizontal scrollable container for multiple featured tournaments. Apply golden highlight border and glow effect. Display featured badge using generated featured-badge.dim_48x48.png from frontend/public/assets/generated/. Show sponsor logo (Code 11 or partner). Emphasize higher prize pools. Use useGetFeaturedTournaments hook."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "operation": "modify",
+          "description": "Integrate FeaturedTournamentsSection component at the top of the dashboard, above the mode filter tabs and regular tournament grid. Ensure featured section is visually distinct and prominent."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentCard.tsx",
+          "operation": "modify",
+          "description": "Add featured prop to TournamentCard component. When featured is true, apply golden border, glow effect, and display featured badge using frontend/public/assets/generated/featured-badge.dim_48x48.png. Show sponsor logo in corner. Use distinct styling to differentiate featured tournaments."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetFeaturedTournaments React Query hook to fetch tournaments marked as featured with their sponsor information. Filter tournaments by featured flag in the query."
+        }
+      ]
+    },
+    {
+      "id": "REQ-21",
+      "summary": "Add Practice Mode section on TournamentDashboard listing zero entry fee practice matches with clear labeling and no wallet deduction",
+      "acceptanceCriteria": [
+        "Practice Mode section appears as a separate tab or section on TournamentDashboard",
+        "Practice matches clearly labeled with 'Practice Mode' badge",
+        "Entry fee is always 0 BDT for practice matches",
+        "Prize pool is displayed as 'No Prize Pool' or similar",
+        "Players can register for practice matches without wallet balance check",
+        "Practice matches include room ID and password like regular tournaments",
+        "Practice match results are tracked but do not affect player rankings or wallet balance",
+        "Practice match participation is included in player statistics but marked separately"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/practice-badge.dim_48x48.png",
+          "operation": "create",
+          "description": "Use the generated practice mode badge icon with training target or practice symbol. This is a static asset at frontend/public/assets/generated/practice-badge.dim_48x48.png."
+        },
+        {
+          "path": "frontend/src/components/tournaments/PracticeModeSection.tsx",
+          "operation": "create",
+          "description": "Create practice mode section component displaying zero entry fee practice matches. Show practice badge using generated practice-badge.dim_48x48.png from frontend/public/assets/generated/. Clearly label as 'Practice Mode' with distinct styling. Display 'No Prize Pool' for prize field. Use TournamentCard components with practice mode styling. Fetch practice matches via useGetPracticeMatches hook."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "operation": "modify",
+          "description": "Add Practice Mode tab to the mode filter tabs (All/Solo/Duo/Squad/Practice). When Practice tab is active, display PracticeModeSection instead of regular tournament grid. Alternatively, display practice section as a separate area below featured tournaments."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentCard.tsx",
+          "operation": "modify",
+          "description": "Add isPracticeMode prop to TournamentCard. When true, display practice badge using frontend/public/assets/generated/practice-badge.dim_48x48.png, show entry fee as '0 BDT (Practice)', and show 'No Prize Pool'. Apply distinct practice mode styling (e.g., blue border instead of purple)."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "For practice mode tournaments, skip wallet balance validation during registration. Display practice mode badge and notice that this is a practice match with no entry fee or prize. Use useRegisterForPracticeMatch mutation instead of regular registration."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetPracticeMatches React Query hook to fetch practice mode tournaments (entry fee = 0, practice flag = true). Add useRegisterForPracticeMatch mutation that skips wallet deduction and marks participation as practice."
+        }
+      ]
+    },
+    {
+      "id": "REQ-22",
+      "summary": "Implement referral system with unique referral codes, friend invitation tracking, 50 BDT bonus credits, and referral statistics dashboard",
+      "acceptanceCriteria": [
+        "Each player automatically receives a unique referral code upon profile creation",
+        "Referral dashboard page accessible from profile menu shows referral code with copy button",
+        "New users can enter referral code during profile setup or on a dedicated referral redemption page",
+        "When referee completes their first tournament, referrer receives 50 BDT bonus wallet credit",
+        "Wallet transaction history shows referral bonus transactions with referee name",
+        "Referral dashboard displays total successful referrals count and total earnings from referrals",
+        "Referee must complete tournament (not just register) for referral bonus to trigger",
+        "Referral code is case-insensitive and easy to share (e.g., 6-8 characters)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/referral-banner.dim_1200x400.png",
+          "operation": "create",
+          "description": "Use the generated referral dashboard banner background with sharing and reward theme. This is a static asset at frontend/public/assets/generated/referral-banner.dim_1200x400.png."
+        },
+        {
+          "path": "frontend/src/components/referral/ReferralDashboard.tsx",
+          "operation": "create",
+          "description": "Create referral dashboard page displaying user's unique referral code with copy-to-clipboard button, total successful referrals count, total earnings from referrals, and list of referred friends with their status (pending/completed first tournament). Use banner background image from frontend/public/assets/generated/referral-banner.dim_1200x400.png. Include share buttons for social media. Fetch data via useGetReferralStats hook."
+        },
+        {
+          "path": "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "operation": "modify",
+          "description": "Add optional referral code input field to the profile setup form for new users. Include helper text explaining referral bonus. Validate referral code format (6-8 characters, case-insensitive). Save referral code when creating new profile via useSaveCallerUserProfile mutation."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetReferralStats React Query hook to fetch user's referral code, total referrals, total earnings, and list of referrals with status. Add useValidateReferralCode query hook to validate referral code before profile creation. Ensure referral code is fetched and displayed in user profile data."
+        },
+        {
+          "path": "frontend/src/components/wallet/TransactionList.tsx",
+          "operation": "modify",
+          "description": "Add display support for referral bonus transaction type. Show 'Referral Bonus' with referee name in transaction description. Use distinct icon for referral transactions (e.g., gift or handshake icon)."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route definition for /referrals path that renders ReferralDashboard component. Ensure route is protected and requires authentication."
+        },
+        {
+          "path": "frontend/src/components/layout/Header.tsx",
+          "operation": "modify",
+          "description": "Add 'Referrals' menu item to the user profile dropdown menu linking to /referrals page. Position it after 'Statistics' option."
+        }
+      ]
+    },
+    {
+      "id": "REQ-23",
+      "summary": "Add bulk tournament creation functionality to admin panel with recurrence patterns, date incrementation, and preview before creation",
+      "acceptanceCriteria": [
+        "Bulk creation form in admin panel includes base tournament template fields (mode, fee, prize, slots)",
+        "Recurrence pattern selection: None, Daily, or Weekly",
+        "Number of occurrences input field (e.g., create 7 tournaments for weekly pattern)",
+        "Start date picker for the first tournament in the series",
+        "Preview shows list of tournaments to be created with dates and names before confirmation",
+        "Tournament names automatically numbered or dated (e.g., 'Solo Weekly #1', 'Solo Weekly #2')",
+        "Room ID and password can be set to auto-generate or use template pattern",
+        "Success message shows count of tournaments created",
+        "Created tournaments appear in regular tournament management list"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/BulkTournamentCreationModal.tsx",
+          "operation": "create",
+          "description": "Create modal dialog for bulk tournament creation with form fields: base tournament template (mode, entry fee, prize, slots), recurrence pattern dropdown (None/Daily/Weekly), number of occurrences input, start date picker, room ID/password template. Include preview section showing generated tournament list with dates and names. Add create button that calls useBulkCreateTournaments mutation. Show success message with count of created tournaments."
+        },
+        {
+          "path": "frontend/src/components/admin/TournamentManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Add 'Bulk Create' button next to the existing 'Create Tournament' button. Button opens BulkTournamentCreationModal. Ensure bulk created tournaments appear in the tournament list after successful creation via query invalidation."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useBulkCreateTournaments mutation hook that accepts base tournament template, recurrence pattern, occurrences count, and start date. Return success/error status and count of created tournaments. Invalidate tournaments query on success."
+        },
+        {
+          "path": "frontend/src/utils/bulkTournamentGenerator.ts",
+          "operation": "create",
+          "description": "Create utility function to generate preview of tournaments based on bulk creation parameters. Accept base template, pattern, occurrences, start date. Return array of tournament objects with incremented dates and sequential naming (e.g., 'Solo Weekly #1', 'Solo Weekly #2'). Support Daily and Weekly recurrence patterns."
+        }
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "summary": "Create player verification system with multiple verification levels, badges on profiles and leaderboards, and admin verification controls",
+      "acceptanceCriteria": [
+        "Four verification levels: Unverified, UID Verified, Payment Verified, Fully Verified",
+        "Each verification level has a distinct badge icon and color",
+        "Verification badges appear next to player name on profile page, leaderboards, and tournament lists",
+        "Admin UserManagementPanel includes verification controls for each user",
+        "Admin can mark Free Fire UID as verified after manual verification",
+        "Admin can mark payment history as verified after successful transactions",
+        "Fully Verified status requires both UID and payment verification",
+        "Hovering over verification badge shows tooltip explaining verification level",
+        "Verified players gain trust indicator in the platform community"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/verify-uid.dim_32x32.png",
+          "operation": "create",
+          "description": "Use the generated UID verified badge icon with checkmark symbol. This is a static asset at frontend/public/assets/generated/verify-uid.dim_32x32.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/verify-payment.dim_32x32.png",
+          "operation": "create",
+          "description": "Use the generated payment verified badge icon with shield symbol. This is a static asset at frontend/public/assets/generated/verify-payment.dim_32x32.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/verify-full.dim_32x32.png",
+          "operation": "create",
+          "description": "Use the generated fully verified badge icon with star symbol. This is a static asset at frontend/public/assets/generated/verify-full.dim_32x32.png."
+        },
+        {
+          "path": "frontend/src/components/verification/VerificationBadge.tsx",
+          "operation": "create",
+          "description": "Create reusable verification badge component displaying appropriate badge icon based on verification level (Unverified, UID Verified, Payment Verified, Fully Verified). Use generated verification badge images from frontend/public/assets/generated/verify-*.dim_32x32.png. Include tooltip on hover explaining verification level. Support multiple sizes. Apply distinct color scheme for each level."
+        },
+        {
+          "path": "frontend/src/components/profile/ProfilePage.tsx",
+          "operation": "modify",
+          "description": "Add verification badge display next to player name using VerificationBadge component. Fetch verification level from user profile data. Show verification status prominently in profile header."
+        },
+        {
+          "path": "frontend/src/components/leaderboard/LeaderboardPage.tsx",
+          "operation": "modify",
+          "description": "Add verification badge next to each player's name in leaderboard using VerificationBadge component in small size. Display alongside tier badge and player name."
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Add verification badges next to participant names in registered players list using VerificationBadge component. Show verification level for each registered participant."
+        },
+        {
+          "path": "frontend/src/components/admin/UserManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Add verification controls for each user in the user management table. Include checkboxes or toggle buttons for 'Verify UID' and 'Verify Payment'. Show current verification status. Add action buttons that call useVerifyUserUID and useVerifyUserPayment mutations. Update user list after verification changes."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add verification level to user profile data structure (Unverified/UIDVerified/PaymentVerified/FullyVerified). Add useVerifyUserUID mutation hook for admin to verify Free Fire UID. Add useVerifyUserPayment mutation hook for admin to verify payment history. Include invalidation logic to refresh user data after verification."
+        }
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "summary": "Add tournament template functionality to admin panel with save, load, edit, delete, and template listing capabilities",
+      "acceptanceCriteria": [
+        "Save as template button in tournament creation form",
+        "Template name input field when saving template",
+        "Template includes all tournament fields: mode, entry fee, prize pool, max slots, default room ID pattern",
+        "Template management section lists all saved templates with name and details preview",
+        "Load template button pre-fills creation form with template values",
+        "Edit template functionality updates existing template configuration",
+        "Delete template button with confirmation dialog",
+        "Templates accessible only to admins",
+        "Default templates provided for common tournament types (Solo Quick, Squad Premium)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/TournamentTemplatesPanel.tsx",
+          "operation": "create",
+          "description": "Create tournament templates management panel displaying list of saved templates with name, mode, fee, prize, slots preview. Include actions: load template (pre-fills form), edit template (opens edit modal), delete template (with confirmation). Show default templates (Solo Quick, Squad Premium). Use useGetTournamentTemplates and useDeleteTemplate hooks."
+        },
+        {
+          "path": "frontend/src/components/admin/SaveTemplateModal.tsx",
+          "operation": "create",
+          "description": "Create modal dialog for saving tournament configuration as template. Include template name input and save button. Accept current tournament form values as props. Call useSaveTemplate mutation on save. Show success message and close modal."
+        },
+        {
+          "path": "frontend/src/components/admin/TournamentManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Add 'Save as Template' button in tournament creation form. Button opens SaveTemplateModal passing current form values. Add 'Load Template' button that opens template selection dropdown or modal. When template is selected, pre-fill form fields with template values. Integrate TournamentTemplatesPanel as a tab or collapsible section in the admin panel."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetTournamentTemplates React Query hook to fetch all saved templates. Add useSaveTemplate mutation to create new template with name and configuration. Add useUpdateTemplate mutation to edit existing template. Add useDeleteTemplate mutation with confirmation. Include invalidation logic to refresh template list after mutations."
+        },
+        {
+          "path": "frontend/src/components/admin/AdminDashboard.tsx",
+          "operation": "modify",
+          "description": "Add 'Templates' tab to the admin dashboard tabs (alongside Tournaments, Users, Payments, Results). Tab displays TournamentTemplatesPanel component."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,333 @@
+{
+  "kind": "build_request",
+  "title": "Add comprehensive eSports features: notifications, squad management, rankings, comments, referral system, and admin tools",
+  "projectName": "Tournament Khelba",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-14",
+      "text": "Create a notifications center page accessible from the Header that displays tournament-related updates including 'Tournament starting in 30 minutes', 'Results are now available', 'New tournament created', and 'Registration confirmed' notifications with timestamp, read/unread status, and notification type icons, updating when users refresh the page",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Notifications page is accessible via a bell icon or link in the Header component",
+        "Each notification displays message text, timestamp, and read/unread status",
+        "Backend stores notifications per user with Principal-based lookup",
+        "Frontend fetches and displays notifications using React Query",
+        "Notifications are marked as read when user views them",
+        "Notification types include tournament start reminders, results availability, registrations, and new tournaments"
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "text": "Build a player statistics dashboard page that displays comprehensive performance metrics including total tournaments played, win rate percentage, average kills per match, total earnings, and favorite game mode with visual charts using a charting library, replacing the current mock-based ProfilePage statistics section",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Player statistics dashboard with charts (win rate, kills, earnings history)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Statistics dashboard shows total tournaments played, wins, win rate percentage",
+        "Average kills per match calculated from tournament results",
+        "Total earnings displayed from wallet transaction history",
+        "Favorite game mode determined by most-played tournament type (Solo/Duo/Squad)",
+        "Visual charts display win rate trend, kills per tournament, and earnings over time",
+        "Backend provides aggregated statistics data for the authenticated user",
+        "Dashboard is accessible from the profile dropdown or navigation menu"
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "text": "Add tournament search and filtering functionality to the TournamentDashboard that allows users to search tournaments by name or description, filter by prize pool range using min/max inputs, filter by date range using date pickers, and filter by entry fee brackets with preset options like 'Free', '0-50 BDT', '50-100 BDT', '100+ BDT', with all filters working together",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Tournament search and advanced filters (prize range, date, entry fee)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Search input field filters tournaments by name or description in real-time",
+        "Prize pool filter with min and max number inputs",
+        "Date range filter with start date and end date pickers",
+        "Entry fee filter with preset bracket buttons (Free, 0-50, 50-100, 100+)",
+        "All filters can be applied simultaneously and tournaments update accordingly",
+        "Clear filters button resets all filters to default state",
+        "Filtered count displays 'Showing X of Y tournaments'"
+      ]
+    },
+    {
+      "id": "REQ-17",
+      "text": "Implement a squad/team management system that allows players to create persistent squads with a team name and tag, invite members by entering their player name or Free Fire UID, accept or decline squad invitations, view squad member list with roles (captain/member), track squad performance metrics including total tournaments played together and squad win rate, and register as a complete squad for Squad-mode tournaments",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5",
+          "msg-6"
+        ],
+        "quotes": [
+          "Add all",
+          "Squad/Team management system (create teams, invite members, register as squad)",
+          "Yes please"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Players can create a new squad with team name and optional team tag",
+        "Squad creator becomes the captain with admin privileges",
+        "Captain can invite players by entering their player name or Free Fire UID",
+        "Invited players receive squad invitations in their notifications",
+        "Players can accept or decline squad invitations",
+        "Squad page displays all members with their roles, join date, and individual stats",
+        "Squad performance section shows total tournaments played together, squad wins, and squad win rate",
+        "When registering for Squad-mode tournaments, players can choose to register as their squad",
+        "Squad registration deducts entry fee from captain's wallet and registers all squad members",
+        "Squad can be disbanded by captain or members can leave the squad"
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "text": "Create a player ranking system with tier badges (Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster) calculated based on tournament performance metrics including total wins, win rate, average kills, and total tournaments played, display the tier badge on player profiles and leaderboards, and show rank progression bar indicating progress toward the next tier",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Player ranking system with tier badges (Bronze, Silver, Gold, Diamond)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend calculates player rank based on performance algorithm considering wins, win rate, kills, and tournaments played",
+        "Seven tier levels: Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster",
+        "Each tier has a unique badge icon and color scheme",
+        "Player profile displays current tier badge prominently",
+        "Tier badge appears next to player name in leaderboards and tournament results",
+        "Rank progression bar shows percentage progress toward next tier",
+        "Rank requirements are clearly documented (e.g., Gold requires 10 wins and 60% win rate)",
+        "Player rank updates automatically when new tournament results are uploaded by admin"
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "text": "Add a tournament comments section on the TournamentDetailPage where registered participants can post comments and questions, view all comments with author name and timestamp sorted by newest first, and see comment updates when refreshing the page, with backend storage per tournament",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Tournament comments section (participants can discuss, updates on refresh)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Comments section appears below tournament details on TournamentDetailPage",
+        "Only registered participants can post comments",
+        "Comment form includes text area and submit button",
+        "Comments display author's player name, timestamp, and comment text",
+        "Comments sorted by newest first",
+        "Backend stores comments per tournament with author Principal and timestamp",
+        "Page refresh fetches and displays new comments",
+        "Comment count badge shows total number of comments on the tournament",
+        "Comments persist across page reloads"
+      ]
+    },
+    {
+      "id": "REQ-20",
+      "text": "Create a Featured Tournaments section on the TournamentDashboard that displays premium tournaments with higher prize pools and special styling including a 'Featured' badge, golden highlight border, and Code 11 or partner sponsor logo, with admin ability to mark tournaments as featured in the admin panel",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Featured/Premium tournaments category with higher prizes, sponsored by Code 11 or other partners"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Featured tournaments section appears above regular tournament listings",
+        "Featured tournaments display with golden or special highlight styling",
+        "Featured badge/label prominently displayed on featured tournament cards",
+        "Featured tournaments show sponsor logo (Code 11 or partner)",
+        "Admin panel includes checkbox or toggle to mark tournament as featured when creating/editing",
+        "Backend stores featured status flag for tournaments",
+        "Featured tournaments have higher prize pools than regular tournaments",
+        "Featured section scrolls horizontally if multiple featured tournaments exist"
+      ]
+    },
+    {
+      "id": "REQ-21",
+      "text": "Add a Practice Mode section on the TournamentDashboard listing zero entry fee practice matches where players can test their skills, with practice matches having similar details as regular tournaments but clearly marked as 'Practice Mode' with no entry fee and no prize pool, allowing players to register without wallet deduction",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Practice mode listings (zero entry fee matches)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Practice Mode section appears as a separate tab or section on TournamentDashboard",
+        "Practice matches clearly labeled with 'Practice Mode' badge",
+        "Entry fee is always 0 BDT for practice matches",
+        "Prize pool is displayed as 'No Prize Pool' or similar",
+        "Players can register for practice matches without wallet balance check",
+        "Practice matches include room ID and password like regular tournaments",
+        "Admin can create practice matches in the admin panel with a practice mode toggle",
+        "Practice match results are tracked but do not affect player rankings or wallet balance",
+        "Practice match participation is included in player statistics but marked separately"
+      ]
+    },
+    {
+      "id": "REQ-22",
+      "text": "Implement a referral system where each player receives a unique referral code, can share it with friends, earns 50 BDT bonus wallet credits when a referred friend completes their first tournament, and can view referral statistics including total referrals and total earnings from referrals on a referral dashboard page",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Referral system (earn wallet credits for inviting friends)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Each player automatically receives a unique referral code upon profile creation",
+        "Referral dashboard page accessible from profile menu shows referral code with copy button",
+        "New users can enter referral code during profile setup or on a dedicated referral redemption page",
+        "Backend tracks referrer-referee relationship and monitors referee's first tournament completion",
+        "When referee completes their first tournament, referrer receives 50 BDT bonus wallet credit",
+        "Wallet transaction history shows referral bonus transactions with referee name",
+        "Referral dashboard displays total successful referrals count and total earnings from referrals",
+        "Referee must complete tournament (not just register) for referral bonus to trigger",
+        "Referral code is case-insensitive and easy to share (e.g., 6-8 characters)"
+      ]
+    },
+    {
+      "id": "REQ-23",
+      "text": "Add bulk tournament creation functionality to the admin TournamentManagementPanel that allows admins to create multiple tournaments at once by specifying base tournament details and a recurrence pattern (daily, weekly) with number of occurrences, automatically generating tournaments with incremented dates and sequential naming",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Bulk tournament creation tool"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Bulk creation form in admin panel includes base tournament template fields (mode, fee, prize, slots)",
+        "Recurrence pattern selection: None, Daily, or Weekly",
+        "Number of occurrences input field (e.g., create 7 tournaments for weekly pattern)",
+        "Start date picker for the first tournament in the series",
+        "Preview shows list of tournaments to be created with dates and names before confirmation",
+        "Tournament names automatically numbered or dated (e.g., 'Solo Weekly #1', 'Solo Weekly #2')",
+        "Backend creates all tournaments in a single operation or batch",
+        "Room ID and password can be set to auto-generate or use template pattern",
+        "Success message shows count of tournaments created",
+        "Created tournaments appear in regular tournament management list"
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "text": "Create a player verification system with multiple verification levels (Unverified, UID Verified, Payment Verified, Fully Verified) displayed as badges on player profiles and leaderboards, with admin panel controls to verify Free Fire UID and payment history, and display verification level in tournament participant lists",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Player verification levels (verified Free Fire UID, verified payment history) with badges"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Four verification levels: Unverified, UID Verified, Payment Verified, Fully Verified",
+        "Each verification level has a distinct badge icon and color",
+        "Verification badges appear next to player name on profile page, leaderboards, and tournament lists",
+        "Admin UserManagementPanel includes verification controls for each user",
+        "Admin can mark Free Fire UID as verified after manual verification",
+        "Admin can mark payment history as verified after successful transactions",
+        "Fully Verified status requires both UID and payment verification",
+        "Hovering over verification badge shows tooltip explaining verification level",
+        "Backend stores verification status flags per user profile",
+        "Verified players gain trust indicator in the platform community"
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "text": "Add tournament template functionality to the admin TournamentManagementPanel allowing admins to save current tournament configurations as reusable templates with a template name, load saved templates to pre-fill tournament creation form, edit existing templates, delete templates, and display a list of available templates with template details",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Add all",
+          "Tournament templates for faster future setup"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Save as template button in tournament creation form",
+        "Template name input field when saving template",
+        "Template includes all tournament fields: mode, entry fee, prize pool, max slots, default room ID pattern",
+        "Template management section lists all saved templates with name and details preview",
+        "Load template button pre-fills creation form with template values",
+        "Edit template functionality updates existing template configuration",
+        "Delete template button with confirmation dialog",
+        "Backend stores templates separately from tournaments with unique template IDs",
+        "Templates accessible only to admins",
+        "Default templates provided for common tournament types (Solo Quick, Squad Premium)"
+      ]
+    }
+  ],
+  "constraints": [
+    "All notifications, comments, and updates must work with manual page refresh, not real-time WebSockets",
+    "Squad registration must validate that all squad members have complete profiles before allowing registration",
+    "Practice matches must not affect player wallet balance or deduct entry fees",
+    "Referral bonuses must only trigger after referee completes their first tournament, not just registration",
+    "Tournament templates are admin-only features and must not be accessible to regular players",
+    "Player verification levels can only be modified by admins through the admin panel",
+    "Bulk tournament creation must prevent creation of tournaments with past dates"
+  ],
+  "nonGoals": [
+    "Real-time push notifications or WebSocket-based live updates",
+    "Automatic Free Fire UID verification through game server integration",
+    "Integration with external payment gateways (bKash, Nagad, Rocket)",
+    "Live match tracking or automatic results collection from game servers",
+    "Video chat or voice communication features for squads",
+    "Automated tournament scheduling without admin intervention",
+    "Player-to-player direct messaging or private chat system"
+  ],
+  "imageRequirements": {
+    "required": [
+      "Notification bell icon with unread indicator dot for Header (notification-bell.dim_32x32.png)",
+      "Seven tier badge icons for ranking system: Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster badges with metallic textures (tier-bronze.dim_64x64.png, tier-silver.dim_64x64.png, tier-gold.dim_64x64.png, tier-platinum.dim_64x64.png, tier-diamond.dim_64x64.png, tier-master.dim_64x64.png, tier-grandmaster.dim_64x64.png)",
+      "Featured tournament badge icon with golden star or crown (featured-badge.dim_48x48.png)",
+      "Practice mode badge icon with training target or practice symbol (practice-badge.dim_48x48.png)",
+      "Verification level badge icons: checkmark for UID verified, shield for payment verified, star for fully verified (verify-uid.dim_32x32.png, verify-payment.dim_32x32.png, verify-full.dim_32x32.png)",
+      "Referral dashboard banner background with sharing and reward theme (referral-banner.dim_1200x400.png)"
+    ],
+    "edits": []
+  }
+}

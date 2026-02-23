@@ -1,0 +1,133 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-23T21:02:49.210Z",
+  "summary": "The diff implements comprehensive eSports features including notifications, statistics dashboard, squad management, referral system, tournament comments, featured tournaments, practice mode, and tournament filters. Most frontend UI components are complete with mock data placeholders. Backend implementation is minimal with only type definitions and migration scaffolding added.",
+  "missing_requirements": [
+    {
+      "id": "REQ-14",
+      "requirement": "Backend stores notifications per user with Principal-based lookup and supports marking notifications as read",
+      "reason": "Backend only defines notification types in migration.mo but lacks actual storage, query, and update functions for notifications",
+      "evidence": [
+        "backend/migration.mo",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "requirement": "Backend provides aggregated statistics data including total tournaments played, wins, win rate, average kills, total earnings, and favorite game mode for the authenticated user",
+      "reason": "Backend has no statistics calculation or aggregation functions implemented",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/hooks/useQueries.ts"
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "requirement": "Backend stores and filters tournaments by search query, prize pool range, date range, and entry fee brackets",
+      "reason": "All filtering is client-side only in useTournamentFilters.ts; no backend tournament storage or query functions exist",
+      "evidence": [
+        "frontend/src/hooks/useTournamentFilters.ts"
+      ]
+    },
+    {
+      "id": "REQ-17",
+      "requirement": "Backend stores squads with captain/member roles, handles squad invitations, tracks squad performance metrics, and validates complete profiles before squad tournament registration",
+      "reason": "Backend only defines Squad type in migration.mo but lacks CRUD operations, invitation system, performance tracking, or registration validation",
+      "evidence": [
+        "backend/migration.mo",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "requirement": "Backend calculates player rank based on performance algorithm and stores tier levels with automatic rank updates when tournament results are uploaded",
+      "reason": "No ranking algorithm, tier calculation, or rank update logic exists in backend",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "requirement": "Backend stores comments per tournament with author Principal and timestamp, validates that only registered participants can post, and provides comment query functions",
+      "reason": "No comment storage, validation, or query functions implemented in backend",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-20",
+      "requirement": "Backend stores featured status flag for tournaments and provides admin functions to mark tournaments as featured",
+      "reason": "No tournament storage with featured flag or admin functions to manage featured status exist in backend",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-21",
+      "requirement": "Backend supports practice match creation with isPractice flag, allows registration without wallet balance check, and tracks results separately without affecting rankings or wallet",
+      "reason": "No practice mode logic, registration bypass, or separate result tracking implemented in backend",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-22",
+      "requirement": "Backend generates unique referral codes, tracks referrer-referee relationships, monitors referee's first tournament completion, and automatically credits 50 BDT bonus to referrer's wallet",
+      "reason": "Backend only defines Referral type but lacks code generation, relationship tracking, tournament completion monitoring, or wallet crediting logic",
+      "evidence": [
+        "backend/migration.mo",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-23",
+      "requirement": "Backend creates multiple tournaments in batch based on recurrence pattern, validates that no past-dated tournaments are created, and generates sequential naming",
+      "reason": "No bulk creation functions, date validation for past dates, or batch processing logic exists in backend",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "requirement": "Backend stores verification status flags per user and provides admin functions to update UID verified and payment verified status",
+      "reason": "No verification level storage or admin update functions implemented in backend",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "requirement": "Backend stores tournament templates separately from tournaments with unique template IDs and provides admin-only CRUD operations for templates",
+      "reason": "No template storage, CRUD functions, or admin access controls for templates exist in backend",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "hallucinated_features": [],
+  "confidence": 0.95,
+  "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/App.tsx",
+    "frontend/src/components/layout/Header.tsx",
+    "frontend/src/components/notifications/NotificationsPage.tsx",
+    "frontend/src/components/referral/ReferralDashboard.tsx",
+    "frontend/src/components/squads/CreateSquadModal.tsx",
+    "frontend/src/components/squads/InviteMemberModal.tsx",
+    "frontend/src/components/squads/SquadsPage.tsx",
+    "frontend/src/components/statistics/StatisticsDashboard.tsx",
+    "frontend/src/components/tournaments/CommentsSection.tsx",
+    "frontend/src/components/tournaments/FeaturedTournamentsSection.tsx",
+    "frontend/src/components/tournaments/PracticeModeSection.tsx",
+    "frontend/src/components/tournaments/TournamentCard.tsx",
+    "frontend/src/components/tournaments/TournamentDashboard.tsx",
+    "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+    "frontend/src/components/tournaments/TournamentFilters.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/hooks/useTournamentFilters.ts",
+    "project_state.json"
+  ]
+}
