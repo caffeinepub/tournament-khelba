@@ -13,9 +13,13 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    addAdmin(principalText: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     getCallerUserRole(): Promise<UserRole>;
+    getMyPrincipal(): Promise<string>;
+    isAdmin(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     isProfileComplete(): Promise<boolean>;
     registerForTournament(_tournamentId: string): Promise<void>;
+    removeAdmin(principalText: string): Promise<void>;
 }

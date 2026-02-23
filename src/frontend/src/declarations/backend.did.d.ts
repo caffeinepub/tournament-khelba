@@ -41,11 +41,15 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'addAdmin' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getMyPrincipal' : ActorMethod<[], string>,
+  'isAdmin' : ActorMethod<[], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'isProfileComplete' : ActorMethod<[], boolean>,
   'registerForTournament' : ActorMethod<[string], undefined>,
+  'removeAdmin' : ActorMethod<[string], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

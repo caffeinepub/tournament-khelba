@@ -78,18 +78,77 @@ export function useRegisterForTournament() {
   });
 }
 
-// Admin Check Query
-export function useIsCallerAdmin() {
+// Admin Check Hook
+export function useAdminCheck() {
   const { actor, isFetching: actorFetching } = useActor();
 
-  return useQuery<boolean>({
+  const query = useQuery<boolean>({
     queryKey: ['isAdmin'],
     queryFn: async () => {
       if (!actor) return false;
-      return actor.isCallerAdmin();
+      return actor.isAdmin();
+    },
+    enabled: !!actor && !actorFetching,
+    retry: false,
+  });
+
+  return {
+    isAdmin: query.data ?? false,
+    isLoading: actorFetching || query.isLoading,
+  };
+}
+
+// Get My Principal ID
+export function useGetMyPrincipal() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<string>({
+    queryKey: ['myPrincipal'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getMyPrincipal();
     },
     enabled: !!actor && !actorFetching,
   });
+}
+
+// Add Admin Mutation
+export function useAddAdmin() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (principalText: string) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.addAdmin(principalText);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
+      queryClient.invalidateQueries({ queryKey: ['adminList'] });
+    },
+  });
+}
+
+// Remove Admin Mutation
+export function useRemoveAdmin() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (principalText: string) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.removeAdmin(principalText);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
+      queryClient.invalidateQueries({ queryKey: ['adminList'] });
+    },
+  });
+}
+
+// Legacy Admin Check (for backward compatibility)
+export function useIsCallerAdmin() {
+  return useAdminCheck();
 }
 
 // Notifications
@@ -649,57 +708,81 @@ const MOCK_SQUAD = {
   members: [
     { name: 'ProGamer', role: 'Captain', joinDate: '2024-01-15', stats: { wins: 8, kills: 120 } },
     { name: 'FireKing', role: 'Member', joinDate: '2024-01-20', stats: { wins: 5, kills: 85 } },
-    { name: 'SquadLeader', role: 'Member', joinDate: '2024-02-01', stats: { wins: 6, kills: 95 } },
+    { name: 'SquadLeader', role: 'Member', joinDate: '2024-01-25', stats: { wins: 6, kills: 95 } },
   ],
   performance: {
-    tournamentsPlayed: 12,
-    wins: 4,
-    winRate: 33,
+    totalTournaments: 12,
+    wins: 3,
+    winRate: 25,
   },
 };
 
 const MOCK_SQUAD_INVITATIONS = [
   {
     id: '1',
-    squadName: 'Thunder Squad',
-    invitedBy: 'ThunderKing',
+    squadName: 'Fire Legends',
+    squadTag: 'FL',
+    invitedBy: 'LegendKiller',
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+  },
+  {
+    id: '2',
+    squadName: 'Thunder Squad',
+    squadTag: 'TS',
+    invitedBy: 'ThunderBolt',
+    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
   },
 ];
 
 const MOCK_REFERRAL_STATS = {
-  referralCode: 'PROG4M3R',
-  totalReferrals: 5,
-  completedReferrals: 3,
-  totalEarnings: 150,
+  referralCode: 'KHELBA-XK2024',
+  totalReferrals: 8,
+  completedReferrals: 5,
+  pendingReferrals: 3,
+  totalEarnings: 250,
   referrals: [
-    { name: 'NewPlayer1', status: 'completed', earnings: 50, date: '2024-02-10' },
-    { name: 'NewPlayer2', status: 'completed', earnings: 50, date: '2024-02-15' },
-    { name: 'NewPlayer3', status: 'pending', earnings: 0, date: '2024-02-20' },
+    { name: 'Player1', status: 'completed', joinDate: '2024-01-10', earnings: 50 },
+    { name: 'Player2', status: 'completed', joinDate: '2024-01-15', earnings: 50 },
+    { name: 'Player3', status: 'pending', joinDate: '2024-01-20', earnings: 0 },
+    { name: 'Player4', status: 'completed', joinDate: '2024-01-25', earnings: 50 },
+    { name: 'Player5', status: 'pending', joinDate: '2024-02-01', earnings: 0 },
   ],
 };
 
 const MOCK_FEATURED_TOURNAMENTS: Tournament[] = [
   {
-    id: 'f1',
+    id: 'featured-1',
     mode: 'Squad',
     entryFee: 500,
-    prizePool: 15000,
-    maxSlots: 20,
-    registeredPlayers: 12,
+    prizePool: 25000,
+    maxSlots: 25,
+    registeredPlayers: 20,
     startTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     roomId: 'FF-FEATURED-001',
     roomPassword: 'FEAT123',
     status: 'upcoming',
     isFeatured: true,
-    isPractice: false,
+    sponsor: 'Code 11',
+  },
+  {
+    id: 'featured-2',
+    mode: 'Solo',
+    entryFee: 200,
+    prizePool: 10000,
+    maxSlots: 100,
+    registeredPlayers: 85,
+    startTime: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
+    roomId: 'FF-FEATURED-002',
+    roomPassword: 'FEAT456',
+    status: 'upcoming',
+    isFeatured: true,
     sponsor: 'Code 11',
   },
 ];
 
 const MOCK_PRACTICE_MATCHES: Tournament[] = [
   {
-    id: 'p1',
+    id: 'practice-1',
     mode: 'Solo',
     entryFee: 0,
     prizePool: 0,
@@ -709,26 +792,38 @@ const MOCK_PRACTICE_MATCHES: Tournament[] = [
     roomId: 'FF-PRACTICE-001',
     roomPassword: 'PRAC123',
     status: 'upcoming',
-    isFeatured: false,
+    isPractice: true,
+  },
+  {
+    id: 'practice-2',
+    mode: 'Duo',
+    entryFee: 0,
+    prizePool: 0,
+    maxSlots: 50,
+    registeredPlayers: 28,
+    startTime: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
+    roomId: 'FF-PRACTICE-002',
+    roomPassword: 'PRAC456',
+    status: 'upcoming',
     isPractice: true,
   },
 ];
 
 const MOCK_TOURNAMENT_TEMPLATES = [
   {
-    id: 't1',
-    name: 'Solo Quick',
+    id: 'template-1',
+    name: 'Standard Solo Tournament',
     mode: 'Solo',
     entryFee: 50,
     prizePool: 1000,
     maxSlots: 100,
   },
   {
-    id: 't2',
-    name: 'Squad Premium',
+    id: 'template-2',
+    name: 'Premium Squad Tournament',
     mode: 'Squad',
-    entryFee: 200,
-    prizePool: 5000,
+    entryFee: 500,
+    prizePool: 10000,
     maxSlots: 25,
   },
 ];

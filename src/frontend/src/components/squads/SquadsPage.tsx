@@ -93,7 +93,7 @@ export default function SquadsPage() {
               {/* Squad Performance */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="bg-gray-800/50 p-4 rounded-lg text-center">
-                  <p className="text-2xl font-bold text-white">{squad.performance.tournamentsPlayed}</p>
+                  <p className="text-2xl font-bold text-white">{squad.performance.totalTournaments}</p>
                   <p className="text-sm text-gray-400">Tournaments</p>
                 </div>
                 <div className="bg-gray-800/50 p-4 rounded-lg text-center">

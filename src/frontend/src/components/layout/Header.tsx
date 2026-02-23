@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
-import { useIsCallerAdmin, useGetUnreadNotificationCount } from '../../hooks/useQueries';
+import { useAdminCheck, useGetUnreadNotificationCount } from '../../hooks/useQueries';
 import { Button } from '@/components/ui/button';
 import { useQueryClient } from '@tanstack/react-query';
 import { Trophy, Wallet, User, BarChart3, Shield, LogOut, Bell, Users, TrendingUp, Gift } from 'lucide-react';
@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 
 export default function Header() {
   const { clear, identity } = useInternetIdentity();
-  const { data: isAdmin } = useIsCallerAdmin();
+  const { isAdmin } = useAdminCheck();
   const unreadCount = useGetUnreadNotificationCount();
   const queryClient = useQueryClient();
   const navigate = useNavigate();

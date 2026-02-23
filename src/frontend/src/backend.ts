@@ -113,11 +113,15 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    addAdmin(principalText: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     getCallerUserRole(): Promise<UserRole>;
+    getMyPrincipal(): Promise<string>;
+    isAdmin(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     isProfileComplete(): Promise<boolean>;
     registerForTournament(_tournamentId: string): Promise<void>;
+    removeAdmin(principalText: string): Promise<void>;
 }
 import type { UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -220,6 +224,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async addAdmin(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addAdmin(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addAdmin(arg0);
+            return result;
+        }
+    }
     async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
         if (this.processError) {
             try {
@@ -246,6 +264,34 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getCallerUserRole();
             return from_candid_UserRole_n10(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getMyPrincipal(): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMyPrincipal();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMyPrincipal();
+            return result;
+        }
+    }
+    async isAdmin(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isAdmin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isAdmin();
+            return result;
         }
     }
     async isCallerAdmin(): Promise<boolean> {
@@ -287,6 +333,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.registerForTournament(arg0);
+            return result;
+        }
+    }
+    async removeAdmin(arg0: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.removeAdmin(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.removeAdmin(arg0);
             return result;
         }
     }

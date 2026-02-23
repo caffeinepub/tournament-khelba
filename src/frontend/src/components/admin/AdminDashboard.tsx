@@ -1,15 +1,27 @@
-import { useIsCallerAdmin } from '../../hooks/useQueries';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useEffect } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { useAdminCheck } from '../../hooks/useQueries';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, AlertTriangle, Info } from 'lucide-react';
+import { toast } from 'sonner';
 import TournamentManagementPanel from './TournamentManagementPanel';
 import UserManagementPanel from './UserManagementPanel';
 import PaymentManagementPanel from './PaymentManagementPanel';
 import ResultsUploadPanel from './ResultsUploadPanel';
+import AdminManagementSection from './AdminManagementSection';
 
 export default function AdminDashboard() {
-  const { data: isAdmin, isLoading } = useIsCallerAdmin();
+  const { isAdmin, isLoading } = useAdminCheck();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && !isAdmin) {
+      toast.error('Access denied: Admin privileges required');
+      navigate({ to: '/' });
+    }
+  }, [isAdmin, isLoading, navigate]);
 
   if (isLoading) {
     return (
@@ -69,6 +81,9 @@ export default function AdminDashboard() {
           <TabsTrigger value="results" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
             Results
           </TabsTrigger>
+          <TabsTrigger value="admins" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white">
+            Admin Management
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="tournaments">
@@ -85,6 +100,10 @@ export default function AdminDashboard() {
 
         <TabsContent value="results">
           <ResultsUploadPanel />
+        </TabsContent>
+
+        <TabsContent value="admins">
+          <AdminManagementSection />
         </TabsContent>
       </Tabs>
     </div>

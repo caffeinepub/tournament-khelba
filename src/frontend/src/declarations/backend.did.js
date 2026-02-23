@@ -53,11 +53,15 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'addAdmin' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getMyPrincipal' : IDL.Func([], [IDL.Text], ['query']),
+  'isAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'isProfileComplete' : IDL.Func([], [IDL.Bool], ['query']),
   'registerForTournament' : IDL.Func([IDL.Text], [], []),
+  'removeAdmin' : IDL.Func([IDL.Text], [], []),
 });
 
 export const idlInitArgs = [];
@@ -108,11 +112,15 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'addAdmin' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getMyPrincipal' : IDL.Func([], [IDL.Text], ['query']),
+    'isAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'isProfileComplete' : IDL.Func([], [IDL.Bool], ['query']),
     'registerForTournament' : IDL.Func([IDL.Text], [], []),
+    'removeAdmin' : IDL.Func([IDL.Text], [], []),
   });
 };
 

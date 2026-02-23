@@ -1,133 +1,54 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-23T21:02:49.210Z",
-  "summary": "The diff implements comprehensive eSports features including notifications, statistics dashboard, squad management, referral system, tournament comments, featured tournaments, practice mode, and tournament filters. Most frontend UI components are complete with mock data placeholders. Backend implementation is minimal with only type definitions and migration scaffolding added.",
+  "generatedAt": "2026-02-23T22:04:48.651Z",
+  "summary": "The diff implements most admin access control requirements using an AccessControl module (REQ-26 through REQ-30 backend functions, REQ-31 through REQ-33 frontend integration). However, REQ-34 (AdminSetup component) and REQ-35 (Admin Management section with admin list display and remove functionality) appear partially implemented. The AdminSetup component exists but lacks backend integration to check if admin list is empty. AdminManagementSection uses a mock admin list instead of querying the backend, and the backend lacks query functions to list all admins.",
   "missing_requirements": [
     {
-      "id": "REQ-14",
-      "requirement": "Backend stores notifications per user with Principal-based lookup and supports marking notifications as read",
-      "reason": "Backend only defines notification types in migration.mo but lacks actual storage, query, and update functions for notifications",
-      "evidence": [
-        "backend/migration.mo",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-15",
-      "requirement": "Backend provides aggregated statistics data including total tournaments played, wins, win rate, average kills, total earnings, and favorite game mode for the authenticated user",
-      "reason": "Backend has no statistics calculation or aggregation functions implemented",
-      "evidence": [
-        "backend/main.mo",
-        "frontend/src/hooks/useQueries.ts"
-      ]
-    },
-    {
-      "id": "REQ-16",
-      "requirement": "Backend stores and filters tournaments by search query, prize pool range, date range, and entry fee brackets",
-      "reason": "All filtering is client-side only in useTournamentFilters.ts; no backend tournament storage or query functions exist",
-      "evidence": [
-        "frontend/src/hooks/useTournamentFilters.ts"
-      ]
-    },
-    {
-      "id": "REQ-17",
-      "requirement": "Backend stores squads with captain/member roles, handles squad invitations, tracks squad performance metrics, and validates complete profiles before squad tournament registration",
-      "reason": "Backend only defines Squad type in migration.mo but lacks CRUD operations, invitation system, performance tracking, or registration validation",
-      "evidence": [
-        "backend/migration.mo",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-18",
-      "requirement": "Backend calculates player rank based on performance algorithm and stores tier levels with automatic rank updates when tournament results are uploaded",
-      "reason": "No ranking algorithm, tier calculation, or rank update logic exists in backend",
+      "id": "REQ-26",
+      "requirement": "Admin list must persist through canister upgrades via backend/migration.mo",
+      "reason": "The diff shows admin management in main.mo using AccessControl module, but there's no evidence in migration.mo that the admin state is being persisted through upgrades",
       "evidence": [
         "backend/main.mo"
       ]
     },
     {
-      "id": "REQ-19",
-      "requirement": "Backend stores comments per tournament with author Principal and timestamp, validates that only registered participants can post, and provides comment query functions",
-      "reason": "No comment storage, validation, or query functions implemented in backend",
+      "id": "REQ-34",
+      "requirement": "AdminSetup component only shows when admin list is empty",
+      "reason": "The AdminSetup component exists but lacks backend integration to check if the admin list is empty. No backend query function is shown to determine if the admin list is empty",
       "evidence": [
-        "backend/main.mo"
+        "frontend/src/components/admin/AdminSetup.tsx"
       ]
     },
     {
-      "id": "REQ-20",
-      "requirement": "Backend stores featured status flag for tournaments and provides admin functions to mark tournaments as featured",
-      "reason": "No tournament storage with featured flag or admin functions to manage featured status exist in backend",
+      "id": "REQ-35",
+      "requirement": "Section displays list of all admin principal IDs",
+      "reason": "AdminManagementSection uses a mock admin list instead of querying the backend for the actual admin list. No backend query function exists to retrieve all admin principals",
       "evidence": [
-        "backend/main.mo"
+        "frontend/src/components/admin/AdminManagementSection.tsx"
       ]
     },
     {
-      "id": "REQ-21",
-      "requirement": "Backend supports practice match creation with isPractice flag, allows registration without wallet balance check, and tracks results separately without affecting rankings or wallet",
-      "reason": "No practice mode logic, registration bypass, or separate result tracking implemented in backend",
+      "id": "REQ-35",
+      "requirement": "Refreshes admin list after changes",
+      "reason": "The mutations call invalidateQueries for adminList queryKey, but no query hook exists to fetch the admin list from the backend",
       "evidence": [
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-22",
-      "requirement": "Backend generates unique referral codes, tracks referrer-referee relationships, monitors referee's first tournament completion, and automatically credits 50 BDT bonus to referrer's wallet",
-      "reason": "Backend only defines Referral type but lacks code generation, relationship tracking, tournament completion monitoring, or wallet crediting logic",
-      "evidence": [
-        "backend/migration.mo",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-23",
-      "requirement": "Backend creates multiple tournaments in batch based on recurrence pattern, validates that no past-dated tournaments are created, and generates sequential naming",
-      "reason": "No bulk creation functions, date validation for past dates, or batch processing logic exists in backend",
-      "evidence": [
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "requirement": "Backend stores verification status flags per user and provides admin functions to update UID verified and payment verified status",
-      "reason": "No verification level storage or admin update functions implemented in backend",
-      "evidence": [
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-25",
-      "requirement": "Backend stores tournament templates separately from tournaments with unique template IDs and provides admin-only CRUD operations for templates",
-      "reason": "No template storage, CRUD functions, or admin access controls for templates exist in backend",
-      "evidence": [
-        "backend/main.mo"
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/components/admin/AdminManagementSection.tsx"
       ]
     }
   ],
   "hallucinated_features": [],
-  "confidence": 0.95,
+  "confidence": 0.75,
   "changed_files": [
     "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
+    "frontend/src/components/admin/AdminDashboard.tsx",
+    "frontend/src/components/admin/AdminManagementSection.tsx",
+    "frontend/src/components/admin/AdminSetup.tsx",
     "frontend/src/components/layout/Header.tsx",
-    "frontend/src/components/notifications/NotificationsPage.tsx",
-    "frontend/src/components/referral/ReferralDashboard.tsx",
-    "frontend/src/components/squads/CreateSquadModal.tsx",
-    "frontend/src/components/squads/InviteMemberModal.tsx",
     "frontend/src/components/squads/SquadsPage.tsx",
-    "frontend/src/components/statistics/StatisticsDashboard.tsx",
-    "frontend/src/components/tournaments/CommentsSection.tsx",
-    "frontend/src/components/tournaments/FeaturedTournamentsSection.tsx",
-    "frontend/src/components/tournaments/PracticeModeSection.tsx",
-    "frontend/src/components/tournaments/TournamentCard.tsx",
-    "frontend/src/components/tournaments/TournamentDashboard.tsx",
-    "frontend/src/components/tournaments/TournamentDetailPage.tsx",
-    "frontend/src/components/tournaments/TournamentFilters.tsx",
     "frontend/src/hooks/useQueries.ts",
-    "frontend/src/hooks/useTournamentFilters.ts",
     "project_state.json"
   ]
 }

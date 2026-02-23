@@ -2,21 +2,53 @@ import Map "mo:core/Map";
 import Text "mo:core/Text";
 import List "mo:core/List";
 import Runtime "mo:core/Runtime";
+import Iter "mo:core/Iter";
 import Principal "mo:core/Principal";
-import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
-import Migration "migration";
+import MixinStorage "blob-storage/Mixin";
 
-(with migration = Migration.run)
 actor {
   include MixinStorage();
 
+  // Authorization system state
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
+  // Admin management via access control system
+  public shared ({ caller }) func addAdmin(principalText : Text) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
+      Runtime.trap("Unauthorized: Only admins can add other admins");
+    };
+
+    let newAdminPrincipal = Principal.fromText(principalText);
+    AccessControl.assignRole(accessControlState, caller, newAdminPrincipal, #admin);
+  };
+
+  public shared ({ caller }) func removeAdmin(principalText : Text) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
+      Runtime.trap("Unauthorized: Only admins can remove other admins");
+    };
+
+    let adminToRemove = Principal.fromText(principalText);
+    AccessControl.assignRole(accessControlState, caller, adminToRemove, #user);
+  };
+
+  public query ({ caller }) func isAdmin() : async Bool {
+    AccessControl.isAdmin(accessControlState, caller);
+  };
+
+  public query ({ caller }) func getMyPrincipal() : async Text {
+    caller.toText();
+  };
+
+  // Classic notification system state
   let notifications = Map.empty<Principal, List.List<Notification>>();
+
+  // Classic referral state
   let referrals = Map.empty<Text, Referral>();
+
+  // Classic squad state
   let squads = Map.empty<Text, Squad>();
 
   // Extended player profile type from old version

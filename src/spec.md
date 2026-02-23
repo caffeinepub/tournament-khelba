@@ -1,20 +1,15 @@
 # Specification
 
 ## Summary
-**Goal:** Add comprehensive eSports features including notifications center, player statistics dashboard, tournament search/filters, squad management system, player ranking with tier badges, tournament comments, featured/practice tournaments, referral system, and admin tools for bulk creation, verification, and templates.
+**Goal:** Implement a secure admin access control system using Internet Identity principal IDs to restrict admin panel access.
 
 **Planned changes:**
-- Add notifications center page accessible from Header displaying tournament-related updates with timestamps and read/unread status
-- Build player statistics dashboard showing tournaments played, win rate, average kills, earnings, and favorite game mode with visual charts
-- Add tournament search and filtering by name, prize pool range, date range, and entry fee brackets to TournamentDashboard
-- Implement squad/team management system for creating squads, inviting members, tracking squad performance, and registering as complete squad for tournaments
-- Create player ranking system with tier badges (Bronze, Silver, Gold, Platinum, Diamond, Master, Grandmaster) based on tournament performance
-- Add tournament comments section on TournamentDetailPage for registered participants to post and view comments
-- Create Featured Tournaments section displaying premium tournaments with special styling, featured badge, and sponsor logos
-- Add Practice Mode section with zero entry fee practice matches that don't affect wallet or rankings
-- Implement referral system with unique codes, 50 BDT bonus for completed referrals, and referral dashboard
-- Add bulk tournament creation tool for admins to create multiple tournaments with recurrence patterns
-- Create player verification system with multiple levels (Unverified, UID Verified, Payment Verified, Fully Verified) and admin controls
-- Add tournament template functionality for admins to save, load, edit, and reuse tournament configurations
+- Add backend storage for admin principal IDs that persists across canister upgrades
+- Create backend functions: isAdmin (query), addAdmin (update), removeAdmin (update), and getMyPrincipal (query)
+- Update frontend useAdminCheck hook to call real backend isAdmin function
+- Block non-admin users from accessing AdminDashboard with redirect and error message
+- Hide Admin navigation link for non-admin users in Header
+- Create AdminSetup component for initial admin configuration with principal ID display and copy button
+- Add Admin Management section to AdminDashboard for viewing, adding, and removing admin principals
 
-**User-visible outcome:** Players can view notifications, track detailed statistics with charts, search and filter tournaments, create and manage squads, earn tier badges based on performance, discuss tournaments in comments, participate in featured and practice matches, earn referral bonuses, and see verification badges. Admins can bulk create tournaments, verify players, and use templates for faster setup.
+**User-visible outcome:** Only users with their Internet Identity principal ID in the admin list can access the admin panel. New deployments start with an empty admin list, allowing the first user to add themselves as admin. Admins can manage the list of authorized principals through the admin dashboard.
