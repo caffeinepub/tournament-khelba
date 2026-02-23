@@ -1,127 +1,120 @@
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Link } from '@tanstack/react-router';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Trophy, Users, Clock, Coins } from 'lucide-react';
-import { Tournament } from '../../hooks/useQueries';
+import { Trophy, Users, Clock, Coins, User } from 'lucide-react';
+import StatusBadge, { TournamentStatus } from '../common/StatusBadge';
+import ProgressBar from '../common/ProgressBar';
+import { formatCurrency, formatSlots, isLowSlots, isUrgentDeadline } from '../../utils/formatters';
+import { useCountdown } from '../../hooks/useCountdown';
 
 interface TournamentCardProps {
-  tournament: Tournament;
-  isPracticeMode?: boolean;
+  tournament: {
+    id: string;
+    mode: string;
+    entryFee: number;
+    prizePool: number;
+    maxSlots: number;
+    registeredPlayers: number;
+    startTime: string;
+    registrationDeadline?: string;
+    isFeatured?: boolean;
+    isPractice?: boolean;
+  };
 }
 
-export default function TournamentCard({ tournament, isPracticeMode }: TournamentCardProps) {
+export default function TournamentCard({ tournament }: TournamentCardProps) {
   const slotsRemaining = tournament.maxSlots - tournament.registeredPlayers;
   const fillPercentage = (tournament.registeredPlayers / tournament.maxSlots) * 100;
-  const startDate = new Date(tournament.startTime);
+  const deadline = tournament.registrationDeadline || tournament.startTime;
+  const countdown = useCountdown(deadline);
+  
+  const getStatus = (): TournamentStatus => {
+    if (slotsRemaining === 0) return 'Full';
+    const now = new Date();
+    const start = new Date(tournament.startTime);
+    if (start < now) return 'Started';
+    return 'Open';
+  };
 
-  const getModeColor = (mode: string) => {
-    if (isPracticeMode) return 'bg-blue-500/20 text-blue-400 border-blue-500/50';
-    switch (mode) {
-      case 'Solo': return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50';
-      case 'Duo': return 'bg-green-500/20 text-green-400 border-green-500/50';
-      case 'Squad': return 'bg-orange-500/20 text-orange-400 border-orange-500/50';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/50';
+  const status = getStatus();
+  const lowSlots = isLowSlots(tournament.registeredPlayers, tournament.maxSlots);
+  const urgentDeadline = isUrgentDeadline(deadline);
+
+  const getModeIcon = () => {
+    switch (tournament.mode) {
+      case 'Solo': return <User className="h-4 w-4" />;
+      case 'Duo': return <Users className="h-4 w-4" />;
+      case 'Squad': return <Users className="h-4 w-4" />;
+      default: return <Trophy className="h-4 w-4" />;
     }
   };
 
-  const borderColor = isPracticeMode 
-    ? 'border-blue-500/30 hover:border-blue-500/60' 
-    : 'border-cyan-500/30 hover:border-cyan-500/60';
-
   return (
-    <Card className={`bg-gray-900/80 border-2 ${borderColor} transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.2)] overflow-hidden group`}>
-      <div className={`h-2 ${isPracticeMode ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : 'bg-gradient-to-r from-cyan-500 via-green-500 to-cyan-500'}`}></div>
-      
-      <CardHeader>
-        <div className="flex items-start justify-between mb-2">
-          <Badge className={`${getModeColor(tournament.mode)} font-bold`}>
-            {tournament.mode}
-          </Badge>
-          {isPracticeMode ? (
-            <img 
-              src="/assets/generated/practice-badge.dim_48x48.png" 
-              alt="Practice" 
-              className="h-8 w-8 opacity-80 group-hover:opacity-100 transition-opacity"
-            />
-          ) : (
-            <img 
-              src="/assets/generated/trophy-icon.dim_128x128.png" 
-              alt="Trophy" 
-              className="h-8 w-8 opacity-80 group-hover:opacity-100 transition-opacity"
-            />
-          )}
-        </div>
-        <CardTitle className="text-2xl font-black text-white">
-          {isPracticeMode ? `${tournament.mode} Practice` : `${tournament.mode} Tournament`}
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-gray-400">
-            <Coins className="h-4 w-4 text-yellow-400" />
-            <span>Entry Fee</span>
+    <Link to="/tournament/$tournamentId" params={{ tournamentId: tournament.id }}>
+      <Card className="bg-gray-900/80 border-2 border-cyan-500/30 hover:border-cyan-500/50 transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,255,255,0.2)] hover:scale-[1.02] cursor-pointer h-full">
+        <div className="h-3 bg-gradient-to-r from-cyan-500 via-green-500 to-cyan-500"></div>
+        <CardHeader className="relative pb-3">
+          <div className="absolute top-4 right-4">
+            <StatusBadge status={status} />
           </div>
-          <span className="text-white font-bold">
-            {isPracticeMode ? '0 BDT (Practice)' : `৳${tournament.entryFee}`}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-gray-400">
-            <Trophy className="h-4 w-4 text-yellow-400" />
-            <span>Prize Pool</span>
-          </div>
-          <span className={isPracticeMode ? 'text-gray-400' : 'text-green-400 font-bold'}>
-            {isPracticeMode ? 'No Prize Pool' : `৳${tournament.prizePool}`}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-gray-400">
-            <Clock className="h-4 w-4 text-cyan-400" />
-            <span>Starts</span>
-          </div>
-          <span className="text-white font-semibold">
-            {startDate.toLocaleString('en-US', { 
-              month: 'short', 
-              day: 'numeric', 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
-          </span>
-        </div>
-
-        <div>
-          <div className="flex items-center justify-between text-sm mb-2">
-            <div className="flex items-center gap-2 text-gray-400">
-              <Users className="h-4 w-4 text-cyan-400" />
-              <span>Slots</span>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-1 text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded">
+              {getModeIcon()}
+              <span className="text-sm font-semibold">{tournament.mode}</span>
             </div>
-            <span className="text-white font-semibold">
-              {tournament.registeredPlayers}/{tournament.maxSlots}
+          </div>
+          <CardTitle className="text-2xl font-black text-white">
+            {tournament.mode} Tournament
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-4 pt-0">
+          {/* Prize Pool - Prominent Display */}
+          <div className="bg-gradient-to-r from-green-500/20 to-green-500/10 border border-green-500/30 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Trophy className="h-6 w-6 text-yellow-400" />
+                <span className="text-gray-300 text-sm">Prize Pool</span>
+              </div>
+              <span className="text-3xl font-black text-green-400 drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]">
+                {formatCurrency(tournament.prizePool)}
+              </span>
+            </div>
+          </div>
+
+          {/* Entry Fee */}
+          <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+            <div className="flex items-center gap-2">
+              <Coins className="h-5 w-5 text-yellow-400" />
+              <span className="text-gray-300 text-sm">Entry Fee</span>
+            </div>
+            <span className="text-white font-bold text-lg">{formatCurrency(tournament.entryFee)}</span>
+          </div>
+
+          {/* Slot Availability */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400">Slots</span>
+              <span className={`font-semibold ${lowSlots ? 'text-orange-400' : 'text-white'}`}>
+                {formatSlots(tournament.registeredPlayers, tournament.maxSlots)}
+              </span>
+            </div>
+            <ProgressBar value={tournament.registeredPlayers} max={tournament.maxSlots} />
+          </div>
+
+          {/* Registration Deadline */}
+          <div className={`flex items-center justify-between p-3 rounded-lg ${urgentDeadline ? 'bg-red-500/10 border border-red-500/30' : 'bg-gray-800/50'}`}>
+            <div className="flex items-center gap-2">
+              <Clock className={`h-5 w-5 ${urgentDeadline ? 'text-red-400' : 'text-cyan-400'}`} />
+              <span className={`text-sm ${urgentDeadline ? 'text-red-300' : 'text-gray-300'}`}>
+                {urgentDeadline ? 'Closing Soon' : 'Registration'}
+              </span>
+            </div>
+            <span className={`font-semibold ${urgentDeadline ? 'text-red-400' : 'text-white'}`}>
+              {countdown}
             </span>
           </div>
-          <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
-            <div 
-              className={`h-full ${isPracticeMode ? 'bg-blue-500' : 'bg-gradient-to-r from-cyan-500 to-green-500'} transition-all duration-300`}
-              style={{ width: `${fillPercentage}%` }}
-            ></div>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">
-            {slotsRemaining} slots remaining
-          </p>
-        </div>
-      </CardContent>
-
-      <CardFooter>
-        <Link to="/tournament/$tournamentId" params={{ tournamentId: tournament.id }} className="w-full">
-          <Button className={`w-full ${isPracticeMode ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gradient-to-r from-cyan-500 to-green-500 hover:from-cyan-600 hover:to-green-600'} text-white font-bold`}>
-            {isPracticeMode ? 'Join Practice' : 'View Details'}
-          </Button>
-        </Link>
-      </CardFooter>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

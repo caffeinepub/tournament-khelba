@@ -26,12 +26,14 @@
   "frontend/src/components/tournaments/TournamentFilters.tsx": "Tournament filter component with search input, prize pool range, entry fee brackets, and clear filters functionality showing filtered count.",
   "frontend/src/hooks/useTournamentFilters.ts": "Custom hook managing tournament filter state and logic for search, prize range, and entry fee bracket filtering using the Tournament type from useQueries with filtered results.",
   "frontend/src/components/tournaments/FeaturedTournamentsSection.tsx": "Featured tournaments section using Tournament type from useQueries with golden styling, sponsor logos, featured badges, and horizontal scrollable container.",
-  "frontend/src/components/tournaments/PracticeModeSection.tsx": "Practice mode section displaying zero entry fee practice matches using Tournament type from useQueries with distinct styling and informational alert.",
+  "frontend/src/components/tournaments/PracticeModeSection.tsx": "Section component that displays practice mode tournaments with an informational alert and grid layout of tournament cards.",
   "frontend/src/components/tournaments/CommentsSection.tsx": "Tournament discussion section with comment form for registered participants, comments list with timestamps, and comment count badge.",
   "frontend/src/components/squads/SquadsPage.tsx": "Squad management page displaying current squad with members and performance using correct property name 'totalTournaments', squad invitations, and create squad functionality with demo mode alert.",
   "frontend/src/components/squads/CreateSquadModal.tsx": "Modal dialog for creating a new squad with team name and tag inputs, validation, and squad creation mutation.",
   "frontend/src/components/squads/InviteMemberModal.tsx": "Modal dialog for inviting squad members by player name or Free Fire UID with invitation sending functionality.",
   "frontend/src/components/referral/ReferralDashboard.tsx": "Referral program dashboard displaying referral code with copy functionality, referral statistics, and list of referrals with completion status.",
   "frontend/src/components/admin/AdminSetup.tsx": "Initial admin setup component that displays user's principal ID with copy functionality and form to add the first admin to the system.",
-  "frontend/src/components/admin/AdminManagementSection.tsx": "Admin management section displaying current admin list with add/remove functionality, confirmation dialogs, and prevents removing the last admin."
+  "frontend/src/components/admin/AdminManagementSection.tsx": "Admin management section displaying current admin list with add/remove functionality, confirmation dialogs, and prevents removing the last admin.",
+  "frontend/src/components/common/EmptyState.tsx": "Reusable empty state component that displays an icon (LucideIcon or image URL), title, description, and optional action button for empty data scenarios.",
+  "frontend/src/components/common/LoadingButton.tsx": "Button component with loading state support that displays a spinner and loading text while disabled, extending standard HTML button attributes."
 }

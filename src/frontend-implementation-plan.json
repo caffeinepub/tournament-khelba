@@ -1,110 +1,741 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Frontend Implementation for Admin Access Control System",
+  "title": "Comprehensive UX Enhancement Package: Loading States, Tournament Experience, Navigation, Visual Polish, and Enhanced Sponsor Visibility",
   "requirements": [
     {
-      "id": "REQ-31",
-      "summary": "Update useAdminCheck hook to call backend isAdmin function",
+      "id": "REQ-36",
+      "summary": "Implement skeleton loading screens across all major pages that display content structure placeholders while data is being fetched",
       "acceptanceCriteria": [
-        "Hook calls backend isAdmin query function",
-        "Returns loading state while checking",
-        "Returns boolean result from backend",
-        "Handles authentication errors gracefully"
+        "Each major page displays a skeleton screen with placeholder boxes matching the page's content layout",
+        "Skeleton screens appear immediately when navigating to a page before data loads",
+        "Skeleton animations provide visual feedback that content is loading",
+        "Once data loads, skeleton screens smoothly transition to actual content"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/common/SkeletonCard.tsx",
+          "operation": "create",
+          "description": "Create a reusable SkeletonCard component with animated pulse effects using Tailwind's animate-pulse utility, supporting various sizes and layouts for cards, lists, and content blocks"
+        },
+        {
+          "path": "frontend/src/components/common/SkeletonLoader.tsx",
+          "operation": "create",
+          "description": "Create a flexible SkeletonLoader component that can render different skeleton patterns (list, grid, form, dashboard) based on props, with smooth fade transitions"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDashboard.tsx",
           "operation": "modify",
-          "description": "Replace the mock useAdminCheck implementation with a real query that calls actor.isAdmin(). Return loading state from both actor fetching and query loading. Handle cases where actor is not available or user is not authenticated by returning false for isAdmin. Remove the mock 'true' return value and connect to the backend isAdmin query function."
-        }
-      ]
-    },
-    {
-      "id": "REQ-32",
-      "summary": "Block non-admin access to AdminDashboard with redirect and error toast",
-      "acceptanceCriteria": [
-        "Component checks admin status using useAdminCheck hook",
-        "Redirects non-admin users immediately to /tournaments route",
-        "Shows error toast with 'Access denied' message",
-        "Does not render any admin UI for non-admin users",
-        "Shows loading state while checking admin status"
-      ],
-      "file_operations": [
+          "description": "Add skeleton loading state that displays 6 skeleton tournament cards in a grid layout while tournaments data is being fetched, transitioning smoothly to actual content once loaded"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Add skeleton loading state showing placeholder for header section, stats grid, and comments section while tournament details are being fetched"
+        },
+        {
+          "path": "frontend/src/components/leaderboard/LeaderboardPage.tsx",
+          "operation": "modify",
+          "description": "Add skeleton loading state displaying placeholder rows for the leaderboard table with rank, player name, and stats columns"
+        },
+        {
+          "path": "frontend/src/components/profile/ProfilePage.tsx",
+          "operation": "modify",
+          "description": "Add skeleton loading state showing placeholders for profile header, stats cards, and tournament history list"
+        },
+        {
+          "path": "frontend/src/components/wallet/WalletPage.tsx",
+          "operation": "modify",
+          "description": "Add skeleton loading state with placeholders for balance card, action buttons, and transaction list items"
+        },
+        {
+          "path": "frontend/src/components/notifications/NotificationsPage.tsx",
+          "operation": "modify",
+          "description": "Add skeleton loading state displaying placeholder notification items in a vertical list"
+        },
+        {
+          "path": "frontend/src/components/statistics/StatisticsDashboard.tsx",
+          "operation": "modify",
+          "description": "Add skeleton loading state showing placeholders for overview stat cards and chart areas"
+        },
+        {
+          "path": "frontend/src/components/squads/SquadsPage.tsx",
+          "operation": "modify",
+          "description": "Add skeleton loading state with placeholders for squad card, member list, and invitations section"
+        },
+        {
+          "path": "frontend/src/components/referral/ReferralDashboard.tsx",
+          "operation": "modify",
+          "description": "Add skeleton loading state showing placeholders for referral code card, stats cards, and referral list"
+        },
         {
           "path": "frontend/src/components/admin/AdminDashboard.tsx",
           "operation": "modify",
-          "description": "Add useAdminCheck hook call at the top of the component. While isLoading is true, show a loading spinner. Once loaded, if isAdmin is false, immediately redirect to /tournaments using useNavigate and show an error toast with the message 'Access denied: Admin privileges required'. Only render the admin dashboard UI when isAdmin is true. Do not show any admin content to non-admin users."
+          "description": "Add skeleton loading state displaying placeholders for admin tabs and dashboard content panels"
         }
       ]
     },
     {
-      "id": "REQ-33",
-      "summary": "Hide Admin navigation link for non-admin users",
+      "id": "REQ-37",
+      "summary": "Create helpful and specific error messages throughout the application that clearly explain what went wrong and provide actionable next steps",
       "acceptanceCriteria": [
-        "Admin link only renders when useAdminCheck returns true",
-        "Link is completely hidden (not just disabled) for non-admins",
-        "No visual indication that admin panel exists for non-admin users"
+        "Error messages clearly state what went wrong in user-friendly language",
+        "Each error message includes actionable guidance on how to resolve the issue",
+        "Error styling is consistent across all components using toast notifications or inline error displays",
+        "Critical errors are distinguished from warnings with appropriate visual hierarchy"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/errorMessages.ts",
+          "operation": "create",
+          "description": "Create a utility module that maps error types (network, authentication, validation, backend operation failures) to user-friendly error messages with actionable guidance"
+        },
+        {
+          "path": "frontend/src/components/common/ErrorDisplay.tsx",
+          "operation": "create",
+          "description": "Create an ErrorDisplay component that shows contextual error messages with icons, severity levels (error, warning, info), and optional retry/action buttons"
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update React Query hooks to use the errorMessages utility for consistent error handling across all backend calls, displaying helpful toast notifications on failures"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Replace generic error alerts with specific error messages using ErrorDisplay component for registration failures, showing reasons like insufficient balance, tournament full, or profile incomplete"
+        },
+        {
+          "path": "frontend/src/components/wallet/WalletPage.tsx",
+          "operation": "modify",
+          "description": "Add inline ErrorDisplay components for deposit/withdrawal form validation errors and transaction failures with clear guidance"
+        },
+        {
+          "path": "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "operation": "modify",
+          "description": "Enhance validation error messages for profile setup form fields to be more descriptive and helpful"
+        }
+      ]
+    },
+    {
+      "id": "REQ-38",
+      "summary": "Design empty state screens for all list and collection views with relevant illustrations, helpful text, and clear call-to-action buttons",
+      "acceptanceCriteria": [
+        "Each empty state displays a relevant icon or illustration",
+        "Empty state text clearly explains why the section is empty and what users can do",
+        "Call-to-action buttons guide users toward populating the empty section",
+        "Empty states match the gaming theme with consistent styling"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/common/EmptyState.tsx",
+          "operation": "create",
+          "description": "Create a reusable EmptyState component that displays an icon, heading, description text, and optional call-to-action button with dark gaming theme styling"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "operation": "modify",
+          "description": "Add EmptyState component when no tournaments match the current filters, with message 'No tournaments found' and a Clear Filters button"
+        },
+        {
+          "path": "frontend/src/components/notifications/NotificationsPage.tsx",
+          "operation": "modify",
+          "description": "Add EmptyState component using the notification bell icon from frontend/public/assets/generated/notification-bell.dim_32x32.png when no notifications exist, with message 'No notifications yet' and helpful text about receiving tournament updates"
+        },
+        {
+          "path": "frontend/src/components/wallet/TransactionList.tsx",
+          "operation": "modify",
+          "description": "Add EmptyState component using the wallet icon from frontend/public/assets/generated/wallet-icon.dim_128x128.png when transaction list is empty, with message 'No transactions yet' and description about deposits and winnings"
+        },
+        {
+          "path": "frontend/src/components/squads/SquadsPage.tsx",
+          "operation": "modify",
+          "description": "Add EmptyState component when user has no squad, with message 'You haven't joined a squad yet' and a Create Squad button"
+        },
+        {
+          "path": "frontend/src/components/leaderboard/LeaderboardPage.tsx",
+          "operation": "modify",
+          "description": "Add EmptyState component using the trophy icon from frontend/public/assets/generated/trophy-icon.dim_128x128.png when leaderboard has no data for the selected time period, with message 'No rankings available yet'"
+        },
+        {
+          "path": "frontend/src/components/referral/ReferralDashboard.tsx",
+          "operation": "modify",
+          "description": "Add EmptyState component when user has no referrals, with message 'No referrals yet' and description encouraging users to share their referral code"
+        }
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "summary": "Add success animations and visual feedback for key user actions using smooth fade-in animations, checkmark icons, and celebratory micro-interactions",
+      "acceptanceCriteria": [
+        "Success animations appear immediately after completing key actions",
+        "Animations are smooth, brief (under 1 second), and non-blocking",
+        "Success feedback includes visual indicators like checkmarks or glow effects",
+        "Animations are consistent across all success scenarios throughout the app"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/common/SuccessAnimation.tsx",
+          "operation": "create",
+          "description": "Create a SuccessAnimation component that displays a checkmark icon with scale and fade-in animations, optional confetti or glow effects, and auto-dismisses after 800ms"
+        },
+        {
+          "path": "frontend/src/components/common/SuccessToast.tsx",
+          "operation": "create",
+          "description": "Create a SuccessToast component that wraps toast notifications with success-specific styling including neon green glow effects and smooth slide-in animations"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Add SuccessAnimation overlay when tournament registration completes successfully, followed by a success toast with registration confirmation details"
+        },
+        {
+          "path": "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "operation": "modify",
+          "description": "Add SuccessAnimation when profile is saved successfully, then close modal with fade-out transition"
+        },
+        {
+          "path": "frontend/src/components/wallet/WalletPage.tsx",
+          "operation": "modify",
+          "description": "Add SuccessAnimation for successful deposit/withdrawal submissions with neon cyan glow effect"
+        },
+        {
+          "path": "frontend/src/components/squads/CreateSquadModal.tsx",
+          "operation": "modify",
+          "description": "Add SuccessAnimation when squad is created successfully before closing the modal"
+        },
+        {
+          "path": "frontend/src/components/tournaments/CommentsSection.tsx",
+          "operation": "modify",
+          "description": "Add subtle success feedback (small checkmark fade-in) when comment is posted successfully"
+        },
+        {
+          "path": "frontend/src/components/admin/TournamentManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Add SuccessAnimation when admin creates a tournament successfully"
+        }
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "summary": "Enhance mobile responsiveness across all pages by improving touch targets, optimizing layouts for small screens, and ensuring all interactive elements work on mobile",
+      "acceptanceCriteria": [
+        "All buttons and interactive elements have minimum 44px touch targets on mobile",
+        "Layouts automatically stack vertically on screens smaller than 768px",
+        "Text remains readable at default mobile zoom levels without horizontal scrolling",
+        "Navigation menu collapses into a mobile-friendly format on small screens",
+        "All forms and modals are fully functional and usable on phone screens"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/layout/Header.tsx",
           "operation": "modify",
-          "description": "Add useAdminCheck hook call. Conditionally render the Admin navigation link only when isAdmin is true. Do not render the link at all for non-admin users (no disabled state, no placeholder). Ensure the navigation menu remains visually consistent whether the admin link is present or not."
+          "description": "Implement mobile-responsive header with hamburger menu button for screens under 768px, collapsing navigation links into a slide-out drawer or dropdown menu with minimum 44px touch targets"
+        },
+        {
+          "path": "frontend/src/components/layout/MobileNav.tsx",
+          "operation": "create",
+          "description": "Create a MobileNav component that renders a slide-out navigation drawer for mobile devices with large touch-friendly navigation items and close button"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentCard.tsx",
+          "operation": "modify",
+          "description": "Ensure all buttons and interactive elements within tournament cards have minimum 44px height on mobile, adjust padding and font sizes for better mobile readability"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentFilters.tsx",
+          "operation": "modify",
+          "description": "Optimize filter controls for mobile with larger touch targets, stack filter options vertically on small screens, and ensure all filter buttons are easily tappable"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Ensure layout stacks vertically on mobile, registration button spans full width with 44px height, and all content sections are properly spaced for mobile viewing"
+        },
+        {
+          "path": "frontend/src/components/wallet/WalletPage.tsx",
+          "operation": "modify",
+          "description": "Stack deposit and withdrawal cards vertically on mobile, ensure form inputs have adequate height (minimum 40px) and touch-friendly spacing"
+        },
+        {
+          "path": "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "operation": "modify",
+          "description": "Ensure modal is fully responsive on mobile screens with proper padding, full-width buttons with 44px height, and scrollable content if needed"
+        },
+        {
+          "path": "frontend/src/components/squads/CreateSquadModal.tsx",
+          "operation": "modify",
+          "description": "Optimize modal for mobile screens with responsive padding, full-width form controls, and touch-friendly button sizing"
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add global CSS utility classes for mobile-responsive touch targets (min-h-[44px]) and adjust base font sizes for optimal mobile readability"
         }
       ]
     },
     {
-      "id": "REQ-34",
-      "summary": "Create AdminSetup component for initial admin configuration",
+      "id": "REQ-41",
+      "summary": "Redesign TournamentCard component to show visual information at a glance with game mode icons, highlighted prize pool, slot availability indicators, and status badges",
       "acceptanceCriteria": [
-        "Component displays current user's principal ID fetched from backend getMyPrincipal function",
-        "Copy button copies principal ID to clipboard with success toast",
-        "Form includes text input for principal ID and 'Add First Admin' button",
-        "Form calls backend addAdmin function with provided principal",
-        "Component only shows when admin list is empty",
-        "Shows success message after adding first admin",
-        "Includes clear instructions for the user"
+        "Tournament cards display game mode with custom icons for Solo/Duo/Squad",
+        "Prize pool is prominently displayed with neon glow effect matching the gaming theme",
+        "Slot availability shows visual progress bar indicating remaining slots",
+        "Entry fee is clearly visible with BDT currency formatting",
+        "Tournament status (Open/Full/Started/Completed) uses color-coded badges"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/tournaments/TournamentCard.tsx",
           "operation": "modify",
-          "description": "Add useGetMyPrincipal hook that queries actor.getMyPrincipal() to fetch the current user's principal ID as text. Enable the query only when actor is available and user is authenticated. Add useAddAdmin mutation hook that calls actor.addAdmin(principalText) and invalidates the admin check query on success."
+          "description": "Redesign card layout to prominently display prize pool with neon green glow effect using text-shadow and larger font size, add game mode icons (trophy, users, users-group) for Solo/Duo/Squad modes, add a horizontal progress bar showing slot availability (green when >50%, orange when 25-50%, red when <25%), display entry fee with BDT currency formatting, and add color-coded status badge (green for Open, orange for Full, cyan for Started, gray for Completed)"
         },
         {
-          "path": "frontend/src/components/admin/AdminSetup.tsx",
+          "path": "frontend/src/components/common/ProgressBar.tsx",
           "operation": "create",
-          "description": "Create a new component that displays the user's principal ID using useGetMyPrincipal hook. Include a copy-to-clipboard button with toast notification on success. Provide a form with a text input for entering a principal ID and an 'Add First Admin' button that calls the useAddAdmin mutation. Show clear instructions explaining that the admin list is empty and the user should copy their principal ID and add it as the first admin. Display success message after successful addition. Include loading and error states for all operations."
+          "description": "Create a reusable ProgressBar component with dynamic color theming (green/orange/red) based on percentage, smooth width transitions, and gaming-themed styling"
+        },
+        {
+          "path": "frontend/src/components/common/StatusBadge.tsx",
+          "operation": "create",
+          "description": "Create a StatusBadge component that renders color-coded badges for tournament status with neon glow effects matching the status color"
+        },
+        {
+          "path": "frontend/src/utils/formatters.ts",
+          "operation": "create",
+          "description": "Create utility functions for formatting currency (BDT), numbers, dates, and slot availability text throughout the application"
         }
       ]
     },
     {
-      "id": "REQ-35",
-      "summary": "Add Admin Management section to AdminDashboard",
+      "id": "REQ-42",
+      "summary": "Streamline tournament registration flow by reducing clicks, pre-filling information, and showing confirmation with room details in a prominent modal",
       "acceptanceCriteria": [
-        "Section displays list of all admin principal IDs",
-        "Add admin form with text input and submit button",
-        "Remove button next to each admin principal with confirmation dialog",
-        "Success/error toasts for add/remove operations",
-        "Prevents removing the last admin",
-        "Refreshes admin list after changes"
+        "Tournament registration completes in maximum 2 clicks for users with complete profiles",
+        "Registration button directly triggers the registration flow without intermediate modals",
+        "Success confirmation appears immediately with tournament details",
+        "Room ID and password are displayed in an easy-to-read modal with copy buttons",
+        "Each registration step provides clear visual feedback on progress"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
           "operation": "modify",
-          "description": "Add useGetAdminList query hook that fetches the list of admin principals from a backend query function. Add useRemoveAdmin mutation hook that calls actor.removeAdmin(principalText) and invalidates both the admin list and admin check queries on success. Ensure proper error handling for all operations."
+          "description": "Simplify registration button to directly call registration mutation when clicked (no intermediate confirmation modal), show loading state on button during registration, and on success immediately open RegistrationSuccessModal with room details"
         },
         {
-          "path": "frontend/src/components/admin/AdminManagementSection.tsx",
+          "path": "frontend/src/components/tournaments/RegistrationSuccessModal.tsx",
           "operation": "create",
-          "description": "Create a section component that displays the current list of admin principals using useGetAdminList hook. Include an add admin form with text input and submit button using useAddAdmin mutation. For each admin principal in the list, show a remove button that opens a confirmation dialog before calling useRemoveAdmin mutation. Prevent removing the last admin with client-side validation and appropriate error message. Show success/error toasts for all operations. Refresh the admin list automatically after add/remove operations through query invalidation."
+          "description": "Create a RegistrationSuccessModal that displays tournament name, start time, room ID and password with large readable text and individual copy-to-clipboard buttons for room ID and password, using neon green success theme"
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update registerForTournament mutation to include optimistic updates and return room credentials immediately for display in success modal"
+        }
+      ]
+    },
+    {
+      "id": "REQ-43",
+      "summary": "Add clear visual status indicators to tournament cards and detail pages showing Open, Full, Started, and Completed statuses with color-coded badges and icons",
+      "acceptanceCriteria": [
+        "Each tournament status uses distinct color coding: green for Open, orange for Full, cyan for Started, gray for Completed",
+        "Status badges include both text labels and icons for quick recognition",
+        "Status is prominently displayed on both tournament cards and detail pages",
+        "Status indicators match the gaming theme with neon-style styling"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/tournaments/TournamentCard.tsx",
+          "operation": "modify",
+          "description": "Add StatusBadge component display in top-right corner of card with appropriate color based on tournament status, using text-shadow for neon glow effect"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Add large StatusBadge component prominently in the header section below tournament title, with matching neon glow effects"
+        },
+        {
+          "path": "frontend/src/components/common/StatusBadge.tsx",
+          "operation": "modify",
+          "description": "Ensure StatusBadge component supports all four status types (Open, Full, Started, Completed) with color mapping: green (#10b981) for Open, orange (#f97316) for Full, cyan (#06b6d4) for Started, gray (#6b7280) for Completed, each with corresponding neon glow text-shadow effects"
+        }
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "summary": "Improve visibility of remaining slots and registration deadlines with fraction format, progress bars, countdown timers, and urgent highlighting",
+      "acceptanceCriteria": [
+        "Remaining slots show both numeric fraction and visual progress bar",
+        "Registration deadline displays countdown timer with human-readable format",
+        "Low slot availability (under 25% remaining) triggers warning styling",
+        "Near deadline (under 24 hours) triggers urgent color highlighting",
+        "Slot and deadline information is prominently positioned on cards and detail pages"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/tournaments/TournamentCard.tsx",
+          "operation": "modify",
+          "description": "Add slot availability display with fraction format (e.g., '8/20 slots') and ProgressBar component below it, apply warning styling (orange glow) when slots remaining < 25%, add countdown timer for registration deadline using human-readable format (e.g., '2h 15m'), apply urgent styling (red glow) when deadline is within 24 hours"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Add prominent slot availability section with large fraction display, wide ProgressBar, and deadline countdown timer in the hero section, apply same warning/urgent styling rules as cards"
+        },
+        {
+          "path": "frontend/src/hooks/useCountdown.ts",
+          "operation": "create",
+          "description": "Create a custom hook that calculates time remaining until a target date and returns human-readable countdown text (e.g., '2 hours 15 minutes', '30 minutes', 'Closing soon'), updates every minute"
+        },
+        {
+          "path": "frontend/src/utils/formatters.ts",
+          "operation": "modify",
+          "description": "Add utility functions for calculating slot availability percentage and determining if slots are low (<25%) or deadline is urgent (<24 hours)"
+        }
+      ]
+    },
+    {
+      "id": "REQ-45",
+      "summary": "Reorganize the Header navigation menu for better information architecture by grouping features and prioritizing frequently accessed pages",
+      "acceptanceCriteria": [
+        "Primary navigation includes most frequently accessed pages: Tournaments, Wallet, Profile, Leaderboard",
+        "Secondary features are grouped in a dropdown or sub-menu",
+        "Navigation labels clearly describe their destination",
+        "Menu structure reduces cognitive load with logical grouping",
+        "Mobile navigation adapts the same structure for small screens"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/layout/Header.tsx",
+          "operation": "modify",
+          "description": "Restructure navigation to show primary links (Tournaments, Wallet, Profile, Leaderboard) directly in the header, move secondary features (Squads, Referrals, Statistics) into a 'More' dropdown menu, ensure navigation labels are concise and descriptive"
+        },
+        {
+          "path": "frontend/src/components/layout/MoreMenu.tsx",
+          "operation": "create",
+          "description": "Create a MoreMenu dropdown component that displays secondary navigation items (Squads, Referrals, Statistics) with icons and labels, using consistent styling with the main navigation"
+        },
+        {
+          "path": "frontend/src/components/layout/MobileNav.tsx",
+          "operation": "modify",
+          "description": "Update mobile navigation to reflect the same structure with primary items listed first, followed by a divider and secondary items"
+        }
+      ]
+    },
+    {
+      "id": "REQ-46",
+      "summary": "Enhance search and filter UX on TournamentDashboard with larger touch targets, real-time result count, visual feedback, and clear all button",
+      "acceptanceCriteria": [
+        "Filter controls have minimum 44px touch targets for mobile usability",
+        "Result count updates in real-time as users adjust filters",
+        "Active filters are visually highlighted with badges or indicators",
+        "Clear All Filters button appears when any filter is active",
+        "Filter panel layout adapts gracefully for mobile screens"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/tournaments/TournamentFilters.tsx",
+          "operation": "modify",
+          "description": "Increase button and input heights to minimum 44px, add real-time filtered result count display (e.g., 'Showing 8 of 24 tournaments'), highlight active filter buttons with neon accent borders and background glow, add 'Clear All Filters' button that appears when any filter is active, optimize layout for mobile with vertical stacking"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "operation": "modify",
+          "description": "Wire the Clear All Filters functionality to reset all filter state, ensure result count updates immediately as filters change using the filtered tournament list length"
+        },
+        {
+          "path": "frontend/src/hooks/useTournamentFilters.ts",
+          "operation": "modify",
+          "description": "Add a resetFilters function that clears all filter criteria, ensure filtered count calculation is exposed for display in the UI"
+        }
+      ]
+    },
+    {
+      "id": "REQ-47",
+      "summary": "Add shortcuts and quick access features to frequently used sections via a Quick Actions floating menu optimized for mobile thumb reach",
+      "acceptanceCriteria": [
+        "Quick actions menu is accessible from all major pages",
+        "Menu includes shortcuts to: My Tournaments, Register, Wallet, Notifications",
+        "Button placement is optimized for mobile thumb reach (bottom-right corner)",
+        "Quick actions are visually distinct but not intrusive",
+        "Each shortcut navigates directly to the relevant page or opens relevant modal"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/common/QuickActionsMenu.tsx",
+          "operation": "create",
+          "description": "Create a floating action button (FAB) positioned in bottom-right corner with neon cyan accent, clicking it expands a radial menu showing quick shortcuts with icons and labels: My Tournaments (filter current user's tournaments), Register (navigate to tournaments), Wallet (navigate to wallet page), Notifications (navigate to notifications page)"
+        },
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "modify",
+          "description": "Include QuickActionsMenu component in the layout so it appears on all pages, positioned with fixed placement at bottom-right (right-4 bottom-4) with z-index above other content"
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Ensure AppLayout with QuickActionsMenu is rendered on all routes so quick actions are available throughout the application"
+        }
+      ]
+    },
+    {
+      "id": "REQ-48",
+      "summary": "Streamline wallet transaction flow with simplified forms, visual feedback for pending transactions, better categorization, and clear transaction details",
+      "acceptanceCriteria": [
+        "Deposit and withdrawal forms require only essential fields",
+        "Pending transactions display with clear pending status badges and visual indicators",
+        "Transaction history can be filtered by type (deposits, withdrawals, winnings, fees)",
+        "Each transaction shows clear labels for amount, type, date, and status",
+        "Transaction amounts use consistent currency formatting throughout"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/wallet/WalletPage.tsx",
+          "operation": "modify",
+          "description": "Simplify deposit form to require only amount field, simplify withdrawal form to require amount and payment method fields, add visual pending status indicators (pulsing badge) for any pending transactions at top of page"
+        },
+        {
+          "path": "frontend/src/components/wallet/TransactionList.tsx",
+          "operation": "modify",
+          "description": "Add filter buttons (All, Deposits, Withdrawals, Winnings, Fees) above transaction list to filter by type, ensure each transaction displays clear type label, formatted date, status badge (completed/pending/failed), and consistently formatted amount with BDT currency using the formatters utility"
+        },
+        {
+          "path": "frontend/src/components/wallet/TransactionFilters.tsx",
+          "operation": "create",
+          "description": "Create a TransactionFilters component with button group for filtering transactions by type, with active filter button highlighted"
+        },
+        {
+          "path": "frontend/src/utils/formatters.ts",
+          "operation": "modify",
+          "description": "Ensure currency formatter consistently formats BDT amounts with proper comma separators and 'BDT' label"
+        }
+      ]
+    },
+    {
+      "id": "REQ-49",
+      "summary": "Implement smooth page transitions throughout the application using fade-in animations for routes, slide-in for modals, and hardware-accelerated 60fps performance",
+      "acceptanceCriteria": [
+        "Page transitions use fade-in effect with 200-300ms duration",
+        "Modals slide in from center with scale and opacity animation",
+        "Content loaded asynchronously fades in smoothly",
+        "All animations maintain 60fps performance on modern devices",
+        "Animations can be interrupted smoothly without visual glitches"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wrap router outlet with a transition wrapper that applies fade-in animation (opacity 0 to 1, duration 250ms) when routes change, using CSS transforms for hardware acceleration"
+        },
+        {
+          "path": "frontend/src/components/common/PageTransition.tsx",
+          "operation": "create",
+          "description": "Create a PageTransition component that wraps page content and applies smooth fade-in animation using Tailwind's transition utilities with transform: translateZ(0) for hardware acceleration"
+        },
+        {
+          "path": "frontend/src/components/common/ModalTransition.tsx",
+          "operation": "create",
+          "description": "Create a ModalTransition wrapper component for all modals that applies slide-in from center with scale (0.95 to 1) and opacity (0 to 1) animations over 200ms, using hardware-accelerated transforms"
+        },
+        {
+          "path": "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "operation": "modify",
+          "description": "Wrap modal content with ModalTransition component for smooth entry/exit animations"
+        },
+        {
+          "path": "frontend/src/components/squads/CreateSquadModal.tsx",
+          "operation": "modify",
+          "description": "Wrap modal content with ModalTransition component for smooth entry/exit animations"
+        },
+        {
+          "path": "frontend/src/components/squads/InviteMemberModal.tsx",
+          "operation": "modify",
+          "description": "Wrap modal content with ModalTransition component for smooth entry/exit animations"
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add global CSS animation keyframes for page transitions, modal animations, and content fade-ins, ensuring all animations use transform and opacity for 60fps GPU-accelerated performance"
+        }
+      ]
+    },
+    {
+      "id": "REQ-50",
+      "summary": "Improve contrast and readability across all UI components to meet WCAG AA standards with increased font sizes for critical information",
+      "acceptanceCriteria": [
+        "All text meets WCAG AA contrast requirements against backgrounds",
+        "Important information uses larger font sizes (18px+ for titles, 16px+ for body)",
+        "Neon accent colors are used decoratively while maintaining readable text",
+        "Interactive elements have clear visual boundaries with sufficient contrast",
+        "Font weights are adjusted for optimal readability on dark backgrounds"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Update CSS color variables to ensure all text colors meet WCAG AA contrast ratio (4.5:1 for normal text, 3:1 for large text) against dark backgrounds, increase base font size from 14px to 16px for better body text readability, adjust neon accent colors to be used only for decorative glows and borders, not for primary text"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentCard.tsx",
+          "operation": "modify",
+          "description": "Increase prize pool font size to text-3xl (30px) with font-bold, increase entry fee font size to text-lg (18px), ensure all text has sufficient contrast against dark card background, use neon glow effects only on decorative elements"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Increase tournament title font size to text-4xl (36px), increase section headings to text-2xl (24px), ensure all body text uses at least text-base (16px), verify all text meets contrast requirements"
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Update color palette to include WCAG AA compliant text colors for dark backgrounds, adjust neon colors to be used only for accents, ensure primary text color has minimum 4.5:1 contrast ratio"
+        }
+      ]
+    },
+    {
+      "id": "REQ-51",
+      "summary": "Apply consistent spacing and alignment across all pages and components using a unified 4px base spacing system",
+      "acceptanceCriteria": [
+        "All spacing uses 4px base unit (spacing scale: 1, 2, 4, 6, 8, 12, 16, 24, 32)",
+        "Cards and containers have consistent padding (16px mobile, 24px desktop)",
+        "Form elements maintain consistent spacing between fields (16px)",
+        "Grid and flex gaps use standardized values (8px, 16px, 24px)",
+        "Component heights follow consistent sizing (buttons 44px, inputs 40px)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Define CSS custom properties for standardized spacing scale (--spacing-1: 4px, --spacing-2: 8px, --spacing-4: 16px, --spacing-6: 24px, --spacing-8: 32px), standardize component heights (--button-height: 44px, --input-height: 40px)"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentCard.tsx",
+          "operation": "modify",
+          "description": "Apply consistent padding using p-4 on mobile and p-6 on desktop, ensure all internal spacing between elements uses standardized gap values (gap-4 for main content, gap-2 for related items)"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Apply consistent section spacing using space-y-6 for major sections, space-y-4 for subsections, p-6 padding on containers"
+        },
+        {
+          "path": "frontend/src/components/wallet/WalletPage.tsx",
+          "operation": "modify",
+          "description": "Standardize card padding (p-6), form field spacing (space-y-4), and button heights (h-11 = 44px)"
+        },
+        {
+          "path": "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "operation": "modify",
+          "description": "Apply consistent form spacing (space-y-4 between fields), button heights (h-11), and modal padding (p-6)"
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Verify and document the spacing scale in the Tailwind config, ensure all spacing utilities align with the 4px base unit system"
+        }
+      ]
+    },
+    {
+      "id": "REQ-52",
+      "summary": "Create engaging button states with hover glow effects, active scale transforms, disabled styles, and loading states with smooth transitions",
+      "acceptanceCriteria": [
+        "Hover states intensify neon glow effects on buttons",
+        "Active states scale buttons to 98% with transform animation",
+        "Disabled buttons show 50% opacity with grayscale filter",
+        "Loading states display spinner while maintaining button dimensions",
+        "All state transitions animate smoothly in 150-200ms"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ui/button.tsx",
+          "operation": "modify",
+          "description": "Enhance button component with hover state that increases neon glow intensity using increased box-shadow spread and blur, add active state with scale-[0.98] transform, add disabled state with opacity-50 and grayscale filter, ensure all transitions use duration-200 for smooth 200ms animations"
+        },
+        {
+          "path": "frontend/src/components/common/LoadingButton.tsx",
+          "operation": "create",
+          "description": "Create a LoadingButton component that extends the button component with loading state displaying a spinner icon while maintaining button dimensions and disabling interaction, using smooth opacity transitions for the spinner appearance"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Replace registration button with LoadingButton component that shows loading state during registration mutation"
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add utility classes for button glow effects (.button-glow-cyan, .button-glow-green, .button-glow-orange) that intensify on hover, using Tailwind's theme colors"
+        }
+      ]
+    },
+    {
+      "id": "REQ-53",
+      "summary": "Build a new enhanced sponsor visibility system completely separate from existing Code 11 branding that displays animated sponsor banners on all major pages",
+      "acceptanceCriteria": [
+        "Animated sponsor banner appears on all 10 major pages listed",
+        "Banner includes Code 11 logo with prominent sizing",
+        "Animation effects include slide-in, fade pulse, or scale that draw attention",
+        "Banner placement is strategic (top of page or hero section) for maximum visibility",
+        "Animation loops subtly without being intrusive or distracting",
+        "Banner design matches gaming theme with neon highlights",
+        "System is completely independent from existing Code 11 branding features"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/sponsor/SponsorBanner.tsx",
+          "operation": "create",
+          "description": "Create a new SponsorBanner component completely independent from existing Code 11 features that displays the Code 11 logo from frontend/public/assets/generated/code11-logo.dim_200x60.png with prominent sizing, animated with subtle scale pulse (scale 1 to 1.02) and fade effects, styled with neon cyan border glow, includes 'Sponsored by Code 11' text, designed to be non-intrusive but eye-catching with looping animation using CSS keyframes"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDashboard.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component at the top of the page above the hero banner with slide-in-from-top animation on mount"
+        },
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component in the hero section above tournament details with fade-in animation"
         },
         {
           "path": "frontend/src/components/admin/AdminDashboard.tsx",
           "operation": "modify",
-          "description": "Import and render the AdminManagementSection component in the dashboard. Position it prominently as a new tab or section alongside existing management panels. Ensure it is only visible to authenticated admin users."
+          "description": "Add SponsorBanner component at the top of the admin dashboard with slide-in animation"
+        },
+        {
+          "path": "frontend/src/components/leaderboard/LeaderboardPage.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component at the top of the leaderboard page with fade-in animation"
+        },
+        {
+          "path": "frontend/src/components/profile/ProfilePage.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component at the top of the profile page with slide-in animation"
+        },
+        {
+          "path": "frontend/src/components/wallet/WalletPage.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component at the top of the wallet page with fade-in animation"
+        },
+        {
+          "path": "frontend/src/components/notifications/NotificationsPage.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component at the top of the notifications page with slide-in animation"
+        },
+        {
+          "path": "frontend/src/components/statistics/StatisticsDashboard.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component at the top of the statistics dashboard with fade-in animation"
+        },
+        {
+          "path": "frontend/src/components/squads/SquadsPage.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component at the top of the squads page with slide-in animation"
+        },
+        {
+          "path": "frontend/src/components/referral/ReferralDashboard.tsx",
+          "operation": "modify",
+          "description": "Add SponsorBanner component at the top of the referral dashboard with fade-in animation"
         }
       ]
     }

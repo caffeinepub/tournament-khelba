@@ -1,219 +1,383 @@
 {
   "kind": "build_request",
-  "title": "Implement admin access control system using Internet Identity principal IDs",
+  "title": "Comprehensive UX Enhancement Package: Loading States, Tournament Experience, Navigation, Visual Polish, and Enhanced Sponsor Visibility",
   "projectName": "Tournament Khelba",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-26",
-      "text": "Create backend storage for a list of admin principal IDs in the main actor that persists across canister upgrades through the migration system",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ],
-        "quotes": [
-          "Build the admin system first then I will provide my principal I'd after signing in"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend maintains a stable array or HashMap of admin principal IDs",
-        "Admin list persists through canister upgrades via migration.mo",
-        "Initial admin list is empty on first deployment"
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "text": "Add backend query function 'isAdmin' that checks if the caller's principal ID exists in the admin list and returns a boolean",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ],
-        "quotes": [
-          "Backend configuration that stores a list of admin principal IDs"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Query function accepts no parameters and uses caller() to get principal",
-        "Returns true only if caller's principal is in the admin list",
-        "Returns false for all users when admin list is empty"
-      ]
-    },
-    {
-      "id": "REQ-28",
-      "text": "Add backend update function 'addAdmin' that allows existing admins to add new principal IDs to the admin list by providing a principal as text parameter",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ],
-        "quotes": [
-          "You'll be able to add your principal ID and manage the admin list after signing in"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Function accepts a principal ID as text parameter",
-        "Only callable by existing admins (checks caller is in admin list)",
-        "Converts text to Principal type and adds to admin list",
-        "Returns success/error result indicating if admin was added",
-        "Prevents duplicate entries"
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "text": "Add backend update function 'removeAdmin' that allows existing admins to remove principal IDs from the admin list by providing a principal as text parameter",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ],
-        "quotes": [
-          "manage the admin list"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Function accepts a principal ID as text parameter",
-        "Only callable by existing admins",
-        "Removes specified principal from admin list",
-        "Returns success/error result",
-        "Prevents removing the last admin to avoid complete lockout"
-      ]
-    },
-    {
-      "id": "REQ-30",
-      "text": "Add backend query function 'getMyPrincipal' that returns the caller's principal ID as text for easy copying",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-final"
-        ],
-        "quotes": [
-          "I'll add a helper function in the admin panel UI where you can easily copy your principal ID after signing in"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Query function accepts no parameters",
-        "Returns caller's principal ID converted to text format",
-        "Works for any authenticated user"
-      ]
-    },
-    {
-      "id": "REQ-31",
-      "text": "Update the useQueries.ts useAdminCheck hook to call the backend isAdmin function instead of returning mock data",
+      "id": "REQ-36",
+      "text": "Implement skeleton loading screens across all major pages (TournamentDashboard, TournamentDetailPage, LeaderboardPage, ProfilePage, WalletPage, NotificationsPage, StatisticsDashboard, SquadsPage, ReferralDashboard, AdminDashboard) that display content structure placeholders while data is being fetched, replacing generic spinners with page-specific skeleton layouts that mirror the actual content structure",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
+          "msg-recent"
         ],
         "quotes": [
-          "Admin panel will check the authenticated user's principal ID against the admin list"
+          "Loading states with skeleton screens"
         ]
       },
       "acceptanceCriteria": [
-        "Hook calls backend isAdmin query function",
-        "Returns loading state while checking",
-        "Returns boolean result from backend",
-        "Handles authentication errors gracefully"
+        "Each major page displays a skeleton screen with placeholder boxes matching the page's content layout",
+        "Skeleton screens appear immediately when navigating to a page before data loads",
+        "Skeleton animations provide visual feedback that content is loading",
+        "Once data loads, skeleton screens smoothly transition to actual content"
       ]
     },
     {
-      "id": "REQ-32",
-      "text": "Update AdminDashboard.tsx to completely block access and redirect non-admin users to the tournament dashboard with an error toast message stating 'Access denied: Admin privileges required'",
+      "id": "REQ-37",
+      "text": "Create helpful and specific error messages throughout the application that clearly explain what went wrong and provide actionable next steps, replacing generic error alerts with context-aware messages for common failure scenarios including network errors, authentication failures, validation errors, and backend operation failures",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
+          "msg-recent"
         ],
         "quotes": [
-          "Non-admin users will be completely blocked from accessing admin routes (redirected with an error message)",
-          "the existing admin panel becomes completely inaccessible to non-admin users"
+          "helpful error messages"
         ]
       },
       "acceptanceCriteria": [
-        "Component checks admin status using useAdminCheck hook",
-        "Redirects non-admin users immediately to /tournaments route",
-        "Shows error toast with 'Access denied' message",
-        "Does not render any admin UI for non-admin users",
-        "Shows loading state while checking admin status"
+        "Error messages clearly state what went wrong in user-friendly language",
+        "Each error message includes actionable guidance on how to resolve the issue",
+        "Error styling is consistent across all components using toast notifications or inline error displays",
+        "Critical errors are distinguished from warnings with appropriate visual hierarchy"
       ]
     },
     {
-      "id": "REQ-33",
-      "text": "Update Header.tsx to hide the Admin link in navigation for non-admin users so only admins can see the admin menu option",
+      "id": "REQ-38",
+      "text": "Design empty state screens for all list and collection views including tournament lists when no tournaments exist, notifications center when no notifications exist, wallet transaction list when no transactions exist, squad member lists when no members exist, and leaderboards when no data exists, each with relevant illustrations or icons, helpful text explaining the empty state, and clear call-to-action buttons to populate the section",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
+          "msg-recent"
         ],
         "quotes": [
-          "existing admin panel becomes completely inaccessible to non-admin users"
+          "empty state designs"
         ]
       },
       "acceptanceCriteria": [
-        "Admin link only renders when useAdminCheck returns true",
-        "Link is completely hidden (not just disabled) for non-admins",
-        "No visual indication that admin panel exists for non-admin users"
+        "Each empty state displays a relevant icon or illustration",
+        "Empty state text clearly explains why the section is empty and what users can do",
+        "Call-to-action buttons guide users toward populating the empty section",
+        "Empty states match the gaming theme with consistent styling"
       ]
     },
     {
-      "id": "REQ-34",
-      "text": "Create an AdminSetup component that displays the user's principal ID with a copy-to-clipboard button and a form to add the first admin principal ID, shown only when the admin list is empty",
+      "id": "REQ-39",
+      "text": "Add success animations and visual feedback for key user actions including tournament registration confirmation, profile update success, wallet transaction submission, squad creation, comment posting, and admin operations, using smooth fade-in animations, checkmark icons, and celebratory micro-interactions that provide clear confirmation without being intrusive",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
+          "msg-recent"
         ],
         "quotes": [
-          "I'll add a helper function in the admin panel UI where you can easily copy your principal ID after signing in",
-          "You'll be able to add your principal ID and manage the admin list after signing in"
+          "success animations"
         ]
       },
       "acceptanceCriteria": [
-        "Component displays current user's principal ID fetched from backend getMyPrincipal function",
-        "Copy button copies principal ID to clipboard with success toast",
-        "Form includes text input for principal ID and 'Add First Admin' button",
-        "Form calls backend addAdmin function with provided principal",
-        "Component only shows when admin list is empty",
-        "Shows success message after adding first admin",
-        "Includes clear instructions for the user"
+        "Success animations appear immediately after completing key actions",
+        "Animations are smooth, brief (under 1 second), and non-blocking",
+        "Success feedback includes visual indicators like checkmarks or glow effects",
+        "Animations are consistent across all success scenarios throughout the app"
       ]
     },
     {
-      "id": "REQ-35",
-      "text": "Add an Admin Management section to the AdminDashboard that allows existing admins to view the list of current admin principals, add new admins by entering their principal ID, and remove admins with confirmation dialog",
+      "id": "REQ-40",
+      "text": "Enhance mobile responsiveness across all pages by improving touch targets to minimum 44px, optimizing layouts for small screens with single-column stacking, ensuring readable font sizes without zooming, making navigation menus mobile-friendly with hamburger menu or bottom nav, ensuring all modals and forms are usable on phone screens, and testing all interactive elements for touch usability",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-final"
+          "msg-recent"
         ],
         "quotes": [
-          "You'll be able to add your principal ID and manage the admin list after signing in",
-          "you can easily add more admin principals in the future"
+          "mobile responsiveness"
         ]
       },
       "acceptanceCriteria": [
-        "Section displays list of all admin principal IDs",
-        "Add admin form with text input and submit button",
-        "Remove button next to each admin principal with confirmation dialog",
-        "Success/error toasts for add/remove operations",
-        "Prevents removing the last admin",
-        "Refreshes admin list after changes"
+        "All buttons and interactive elements have minimum 44px touch targets on mobile",
+        "Layouts automatically stack vertically on screens smaller than 768px",
+        "Text remains readable at default mobile zoom levels without horizontal scrolling",
+        "Navigation menu collapses into a mobile-friendly format on small screens",
+        "All forms and modals are fully functional and usable on phone screens"
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "text": "Redesign TournamentCard component to show visual information at a glance by adding game mode icons (Solo/Duo/Squad), highlighting prize pool with larger typography and neon glow effects, displaying slot availability with progress bars or visual indicators, showing entry fee prominently with currency formatting, and adding status badges for tournament state with color-coded visual hierarchy",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "Enhanced visual cards"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Tournament cards display game mode with custom icons for Solo/Duo/Squad",
+        "Prize pool is prominently displayed with neon glow effect matching the gaming theme",
+        "Slot availability shows visual progress bar indicating remaining slots",
+        "Entry fee is clearly visible with BDT currency formatting",
+        "Tournament status (Open/Full/Started/Completed) uses color-coded badges"
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "text": "Streamline tournament registration flow by reducing the registration process to fewer clicks, pre-filling user information where available, showing registration confirmation immediately without page reload, displaying room ID and password in a prominent modal with copy-to-clipboard functionality, and providing clear feedback at each step of the registration process",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "streamlined registration"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Tournament registration completes in maximum 2 clicks for users with complete profiles",
+        "Registration button directly triggers the registration flow without intermediate modals",
+        "Success confirmation appears immediately with tournament details",
+        "Room ID and password are displayed in an easy-to-read modal with copy buttons",
+        "Each registration step provides clear visual feedback on progress"
+      ]
+    },
+    {
+      "id": "REQ-43",
+      "text": "Add clear visual status indicators to tournament cards and detail pages showing Open status with green accent when registration is available, Full status with orange accent when all slots are filled, Started status with cyan accent when tournament is in progress, and Completed status with gray accent when tournament has ended, using color-coded badges, icons, and text labels that are immediately recognizable",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "clear status indicators"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Each tournament status uses distinct color coding: green for Open, orange for Full, cyan for Started, gray for Completed",
+        "Status badges include both text labels and icons for quick recognition",
+        "Status is prominently displayed on both tournament cards and detail pages",
+        "Status indicators match the gaming theme with neon-style styling"
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "text": "Improve visibility of remaining slots and registration deadlines on tournament cards and TournamentDetailPage by displaying remaining slots with fraction format (e.g., '8/20 slots remaining') and visual progress bar, showing registration deadline with countdown timer (e.g., 'Registration closes in 2 hours'), and highlighting urgent information when slots are low or deadline is near with warning colors",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "better slot/deadline visibility"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Remaining slots show both numeric fraction and visual progress bar",
+        "Registration deadline displays countdown timer with human-readable format",
+        "Low slot availability (under 25% remaining) triggers warning styling",
+        "Near deadline (under 24 hours) triggers urgent color highlighting",
+        "Slot and deadline information is prominently positioned on cards and detail pages"
+      ]
+    },
+    {
+      "id": "REQ-45",
+      "text": "Reorganize the Header navigation menu for better information architecture by grouping related features together, prioritizing frequently accessed pages like Tournaments, My Profile, and Wallet in primary navigation, moving secondary features like Squads, Referrals, and Statistics to a sub-menu or user dropdown, and ensuring navigation labels are clear and descriptive",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "Improved menu organization"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Primary navigation includes most frequently accessed pages: Tournaments, Wallet, Profile, Leaderboard",
+        "Secondary features are grouped in a dropdown or sub-menu",
+        "Navigation labels clearly describe their destination",
+        "Menu structure reduces cognitive load with logical grouping",
+        "Mobile navigation adapts the same structure for small screens"
+      ]
+    },
+    {
+      "id": "REQ-46",
+      "text": "Enhance search and filter UX on TournamentDashboard by making the TournamentFilters component more intuitive with larger touch targets for filter options, adding real-time result count updates as filters are applied, providing clear visual feedback when filters are active, adding a 'Clear All Filters' button for easy reset, and improving the layout for better mobile usability",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "better search/filter UX"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Filter controls have minimum 44px touch targets for mobile usability",
+        "Result count updates in real-time as users adjust filters",
+        "Active filters are visually highlighted with badges or indicators",
+        "Clear All Filters button appears when any filter is active",
+        "Filter panel layout adapts gracefully for mobile screens"
+      ]
+    },
+    {
+      "id": "REQ-47",
+      "text": "Add shortcuts and quick access features to frequently used sections by creating a 'Quick Actions' floating action button or menu that provides one-click access to My Tournaments, Register for Tournament, Check Wallet Balance, and View Notifications, positioned strategically for easy thumb reach on mobile devices",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "shortcuts to frequently used features"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Quick actions menu is accessible from all major pages",
+        "Menu includes shortcuts to: My Tournaments, Register, Wallet, Notifications",
+        "Button placement is optimized for mobile thumb reach (bottom-right corner)",
+        "Quick actions are visually distinct but not intrusive",
+        "Each shortcut navigates directly to the relevant page or opens relevant modal"
+      ]
+    },
+    {
+      "id": "REQ-48",
+      "text": "Streamline wallet transaction flow on WalletPage by redesigning deposit and withdrawal cards with simplified forms requiring fewer fields, adding visual feedback for pending transactions, improving transaction history display with better categorization and filtering options, and making transaction details easier to understand with clear labels and formatting",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "streamlined wallet flow"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Deposit and withdrawal forms require only essential fields",
+        "Pending transactions display with clear pending status badges and visual indicators",
+        "Transaction history can be filtered by type (deposits, withdrawals, winnings, fees)",
+        "Each transaction shows clear labels for amount, type, date, and status",
+        "Transaction amounts use consistent currency formatting throughout"
+      ]
+    },
+    {
+      "id": "REQ-49",
+      "text": "Implement smooth page transitions throughout the application using fade-in animations when navigating between routes, smooth slide-in animations for modals and side panels, gentle fade animations for content appearing after loading, and ensuring all transitions are hardware-accelerated for 60fps performance",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "Smooth transitions and animations"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Page transitions use fade-in effect with 200-300ms duration",
+        "Modals slide in from center with scale and opacity animation",
+        "Content loaded asynchronously fades in smoothly",
+        "All animations maintain 60fps performance on modern devices",
+        "Animations can be interrupted smoothly without visual glitches"
+      ]
+    },
+    {
+      "id": "REQ-50",
+      "text": "Improve contrast and readability across all UI components by ensuring text meets WCAG AA contrast standards (4.5:1 for normal text, 3:1 for large text) against dark backgrounds, increasing font sizes for critical information like prize pools and tournament titles, adjusting neon colors where they compromise readability, and ensuring all interactive elements have sufficient visual weight",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "better contrast and readability"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All text meets WCAG AA contrast requirements against backgrounds",
+        "Important information uses larger font sizes (18px+ for titles, 16px+ for body)",
+        "Neon accent colors are used decoratively while maintaining readable text",
+        "Interactive elements have clear visual boundaries with sufficient contrast",
+        "Font weights are adjusted for optimal readability on dark backgrounds"
+      ]
+    },
+    {
+      "id": "REQ-51",
+      "text": "Apply consistent spacing and alignment across all pages and components by establishing a unified spacing system using multiples of 4px (4, 8, 16, 24, 32px), ensuring consistent padding and margins for cards and containers, aligning form elements consistently, standardizing gap spacing in grid and flex layouts, and maintaining consistent component sizing throughout the application",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "consistent spacing and alignment"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All spacing uses 4px base unit (spacing scale: 1, 2, 4, 6, 8, 12, 16, 24, 32)",
+        "Cards and containers have consistent padding (16px mobile, 24px desktop)",
+        "Form elements maintain consistent spacing between fields (16px)",
+        "Grid and flex gaps use standardized values (8px, 16px, 24px)",
+        "Component heights follow consistent sizing (buttons 44px, inputs 40px)"
+      ]
+    },
+    {
+      "id": "REQ-52",
+      "text": "Create engaging button states with clear visual feedback by implementing hover effects with neon glow intensification, active/pressed states with subtle scale transform, disabled states with reduced opacity and grayscale filter, loading states with spinner animations, and ensuring all state transitions are smooth with 150-200ms duration",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "engaging button states"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Hover states intensify neon glow effects on buttons",
+        "Active states scale buttons to 98% with transform animation",
+        "Disabled buttons show 50% opacity with grayscale filter",
+        "Loading states display spinner while maintaining button dimensions",
+        "All state transitions animate smoothly in 150-200ms"
+      ]
+    },
+    {
+      "id": "REQ-53",
+      "text": "Build a new enhanced sponsor visibility system completely separate from existing Code 11 branding that displays animated sponsor banners on all major pages including TournamentDashboard, TournamentDetailPage, AdminDashboard, LeaderboardPage, ProfilePage, WalletPage, NotificationsPage, StatisticsDashboard, SquadsPage, and ReferralDashboard, featuring eye-catching animations like slide-in, fade pulse, or subtle scale effects, prominent placement in header or hero sections, and clear sponsor logo and text that makes Code 11 sponsorship highly visible and engaging",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "Animated sponsor banners",
+          "All major pages coverage",
+          "a completely new system separate from the existing Code 11 integration"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Animated sponsor banner appears on all 10 major pages listed",
+        "Banner includes Code 11 logo with prominent sizing",
+        "Animation effects include slide-in, fade pulse, or scale that draw attention",
+        "Banner placement is strategic (top of page or hero section) for maximum visibility",
+        "Animation loops subtly without being intrusive or distracting",
+        "Banner design matches gaming theme with neon highlights",
+        "System is completely independent from existing Code 11 branding features"
       ]
     }
   ],
   "constraints": [
-    "Do not modify Internet Identity authentication flow in useInternetIdentity.ts",
-    "Do not change the single-actor architecture - all admin logic must be in backend/main.mo",
-    "Admin list must persist through canister upgrades via backend/migration.mo",
-    "All existing users lose admin access when this change deploys (admin list starts empty)"
+    "Must respect frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui",
+    "All animations must maintain 60fps performance on modern devices",
+    "Mobile responsiveness must support screens as small as 320px width",
+    "Must maintain dark gaming theme with neon highlights throughout all enhancements",
+    "Enhanced sponsor system must not conflict with or replace existing Code 11 branding"
   ],
   "nonGoals": [
-    "Email-based authentication or email verification",
-    "Role-based permissions beyond admin/non-admin",
-    "Multi-level admin hierarchy",
-    "Admin activity audit logs",
-    "Implementing the comprehensive enhancement package (calendar, achievements, analytics) - those come in future phases"
+    "Backend implementation changes are not required for these UX enhancements",
+    "Do not modify authentication flows or Internet Identity integration",
+    "Do not change existing tournament business logic or registration rules",
+    "Do not alter wallet balance calculation or transaction processing",
+    "Do not modify admin authorization or access control systems",
+    "Do not integrate external animation libraries beyond existing dependencies"
   ],
   "imageRequirements": {
     "required": [],

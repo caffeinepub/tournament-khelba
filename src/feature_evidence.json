@@ -2,10 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-usequeries-ts-useadmincheck-hook-to-call-the-backend-isadmin-function-instead-of-returning-mock-data",
-      "featureTitle": "Update the useQueries.ts useAdminCheck hook to call the backend isAdmin function instead of returning mock data",
+      "featureId": "feature-implement-skeleton-loading-screens-across-all-major-pages-tournamentdashboard-tournamentdetailpage-leaderboardpage-profilepage-walletpage-notificationspage-statisticsdashboard-squadspage-referraldashboard-admindashboard-that-display-content-structure-placeholders-while-data-is-being-fetched-replacing-generic-spinners-with-page-specific-skeleton-layouts-that-mirror-the-actual-content-structure",
+      "featureTitle": "Implement skeleton loading screens across all major pages (TournamentDashboard, TournamentDetailPage, LeaderboardPage, ProfilePage, WalletPage, NotificationsPage, StatisticsDashboard, SquadsPage, ReferralDashboard, AdminDashboard) that display content structure placeholders while data is being fetched, replacing generic spinners with page-specific skeleton layouts that mirror the actual content structure",
       "files": [
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/components/common/SkeletonCard.tsx",
+        "frontend/src/components/common/SkeletonLoader.tsx",
+        "frontend/src/components/tournaments/TournamentDashboard.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -17,15 +19,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-31"
+        "REQ-36"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-admindashboard-tsx-to-completely-block-access-and-redirect-non-admin-users-to-the-tournament-dashboard-with-an-error-toast-message-stating-access-denied-admin-privileges-required",
-      "featureTitle": "Update AdminDashboard.tsx to completely block access and redirect non-admin users to the tournament dashboard with an error toast message stating 'Access denied: Admin privileges required'",
+      "featureId": "feature-create-helpful-and-specific-error-messages-throughout-the-application-that-clearly-explain-what-went-wrong-and-provide-actionable-next-steps-replacing-generic-error-alerts-with-context-aware-messages-for-common-failure-scenarios-including-network-errors-authentication-failures-validation-errors-and-backend-operation-failures",
+      "featureTitle": "Create helpful and specific error messages throughout the application that clearly explain what went wrong and provide actionable next steps, replacing generic error alerts with context-aware messages for common failure scenarios including network errors, authentication failures, validation errors, and backend operation failures",
       "files": [
-        "frontend/src/components/admin/AdminDashboard.tsx"
+        "frontend/src/components/common/ErrorDisplay.tsx",
+        "frontend/src/utils/errorMessages.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -37,15 +40,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-32"
+        "REQ-37"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-header-tsx-to-hide-the-admin-link-in-navigation-for-non-admin-users-so-only-admins-can-see-the-admin-menu-option",
-      "featureTitle": "Update Header.tsx to hide the Admin link in navigation for non-admin users so only admins can see the admin menu option",
+      "featureId": "feature-design-empty-state-screens-for-all-list-and-collection-views-including-tournament-lists-when-no-tournaments-exist-notifications-center-when-no-notifications-exist-wallet-transaction-list-when-no-transactions-exist-squad-member-lists-when-no-members-exist-and-leaderboards-when-no-data-exists-each-with-relevant-illustrations-or-icons-helpful-text-explaining-the-empty-state-and-clear-call-to-action-buttons-to-populate-the-section",
+      "featureTitle": "Design empty state screens for all list and collection views including tournament lists when no tournaments exist, notifications center when no notifications exist, wallet transaction list when no transactions exist, squad member lists when no members exist, and leaderboards when no data exists, each with relevant illustrations or icons, helpful text explaining the empty state, and clear call-to-action buttons to populate the section",
       "files": [
-        "frontend/src/components/layout/Header.tsx"
+        "frontend/src/components/common/EmptyState.tsx",
+        "frontend/src/components/tournaments/TournamentDashboard.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -57,16 +61,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-33"
+        "REQ-38"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-create-an-adminsetup-component-that-displays-the-user-s-principal-id-with-a-copy-to-clipboard-button-and-a-form-to-add-the-first-admin-principal-id-shown-only-when-the-admin-list-is-empty",
-      "featureTitle": "Create an AdminSetup component that displays the user's principal ID with a copy-to-clipboard button and a form to add the first admin principal ID, shown only when the admin list is empty",
+      "featureId": "feature-add-success-animations-and-visual-feedback-for-key-user-actions-including-tournament-registration-confirmation-profile-update-success-wallet-transaction-submission-squad-creation-comment-posting-and-admin-operations-using-smooth-fade-in-animations-checkmark-icons-and-celebratory-micro-interactions-that-provide-clear-confirmation-without-being-intrusive",
+      "featureTitle": "Add success animations and visual feedback for key user actions including tournament registration confirmation, profile update success, wallet transaction submission, squad creation, comment posting, and admin operations, using smooth fade-in animations, checkmark icons, and celebratory micro-interactions that provide clear confirmation without being intrusive",
       "files": [
-        "frontend/src/components/admin/AdminSetup.tsx",
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/components/common/SuccessAnimation.tsx",
+        "frontend/src/components/common/SuccessToast.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -78,17 +82,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-34"
+        "REQ-39"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-an-admin-management-section-to-the-admindashboard-that-allows-existing-admins-to-view-the-list-of-current-admin-principals-add-new-admins-by-entering-their-principal-id-and-remove-admins-with-confirmation-dialog",
-      "featureTitle": "Add an Admin Management section to the AdminDashboard that allows existing admins to view the list of current admin principals, add new admins by entering their principal ID, and remove admins with confirmation dialog",
+      "featureId": "feature-enhance-mobile-responsiveness-across-all-pages-by-improving-touch-targets-to-minimum-44px-optimizing-layouts-for-small-screens-with-single-column-stacking-ensuring-readable-font-sizes-without-zooming-making-navigation-menus-mobile-friendly-with-hamburger-menu-or-bottom-nav-ensuring-all-modals-and-forms-are-usable-on-phone-screens-and-testing-all-interactive-elements-for-touch-usability",
+      "featureTitle": "Enhance mobile responsiveness across all pages by improving touch targets to minimum 44px, optimizing layouts for small screens with single-column stacking, ensuring readable font sizes without zooming, making navigation menus mobile-friendly with hamburger menu or bottom nav, ensuring all modals and forms are usable on phone screens, and testing all interactive elements for touch usability",
       "files": [
-        "frontend/src/components/admin/AdminDashboard.tsx",
-        "frontend/src/components/admin/AdminManagementSection.tsx",
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/components/layout/MobileNav.tsx",
+        "frontend/src/components/tournaments/TournamentCard.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -100,7 +103,275 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-35"
+        "REQ-40"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-redesign-tournamentcard-component-to-show-visual-information-at-a-glance-by-adding-game-mode-icons-solo-duo-squad-highlighting-prize-pool-with-larger-typography-and-neon-glow-effects-displaying-slot-availability-with-progress-bars-or-visual-indicators-showing-entry-fee-prominently-with-currency-formatting-and-adding-status-badges-for-tournament-state-with-color-coded-visual-hierarchy",
+      "featureTitle": "Redesign TournamentCard component to show visual information at a glance by adding game mode icons (Solo/Duo/Squad), highlighting prize pool with larger typography and neon glow effects, displaying slot availability with progress bars or visual indicators, showing entry fee prominently with currency formatting, and adding status badges for tournament state with color-coded visual hierarchy",
+      "files": [
+        "frontend/src/components/common/ProgressBar.tsx",
+        "frontend/src/components/common/StatusBadge.tsx",
+        "frontend/src/components/tournaments/TournamentCard.tsx",
+        "frontend/src/utils/formatters.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-41"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-streamline-tournament-registration-flow-by-reducing-the-registration-process-to-fewer-clicks-pre-filling-user-information-where-available-showing-registration-confirmation-immediately-without-page-reload-displaying-room-id-and-password-in-a-prominent-modal-with-copy-to-clipboard-functionality-and-providing-clear-feedback-at-each-step-of-the-registration-process",
+      "featureTitle": "Streamline tournament registration flow by reducing the registration process to fewer clicks, pre-filling user information where available, showing registration confirmation immediately without page reload, displaying room ID and password in a prominent modal with copy-to-clipboard functionality, and providing clear feedback at each step of the registration process",
+      "files": [
+        "frontend/src/components/tournaments/RegistrationSuccessModal.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-42"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-clear-visual-status-indicators-to-tournament-cards-and-detail-pages-showing-open-status-with-green-accent-when-registration-is-available-full-status-with-orange-accent-when-all-slots-are-filled-started-status-with-cyan-accent-when-tournament-is-in-progress-and-completed-status-with-gray-accent-when-tournament-has-ended-using-color-coded-badges-icons-and-text-labels-that-are-immediately-recognizable",
+      "featureTitle": "Add clear visual status indicators to tournament cards and detail pages showing Open status with green accent when registration is available, Full status with orange accent when all slots are filled, Started status with cyan accent when tournament is in progress, and Completed status with gray accent when tournament has ended, using color-coded badges, icons, and text labels that are immediately recognizable",
+      "files": [
+        "frontend/src/components/common/StatusBadge.tsx",
+        "frontend/src/components/tournaments/TournamentCard.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-43"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-improve-visibility-of-remaining-slots-and-registration-deadlines-on-tournament-cards-and-tournamentdetailpage-by-displaying-remaining-slots-with-fraction-format-e-g-8-20-slots-remaining-and-visual-progress-bar-showing-registration-deadline-with-countdown-timer-e-g-registration-closes-in-2-hours-and-highlighting-urgent-information-when-slots-are-low-or-deadline-is-near-with-warning-colors",
+      "featureTitle": "Improve visibility of remaining slots and registration deadlines on tournament cards and TournamentDetailPage by displaying remaining slots with fraction format (e.g., '8/20 slots remaining') and visual progress bar, showing registration deadline with countdown timer (e.g., 'Registration closes in 2 hours'), and highlighting urgent information when slots are low or deadline is near with warning colors",
+      "files": [
+        "frontend/src/components/tournaments/TournamentCard.tsx",
+        "frontend/src/hooks/useCountdown.ts",
+        "frontend/src/utils/formatters.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-44"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-reorganize-the-header-navigation-menu-for-better-information-architecture-by-grouping-related-features-together-prioritizing-frequently-accessed-pages-like-tournaments-my-profile-and-wallet-in-primary-navigation-moving-secondary-features-like-squads-referrals-and-statistics-to-a-sub-menu-or-user-dropdown-and-ensuring-navigation-labels-are-clear-and-descriptive",
+      "featureTitle": "Reorganize the Header navigation menu for better information architecture by grouping related features together, prioritizing frequently accessed pages like Tournaments, My Profile, and Wallet in primary navigation, moving secondary features like Squads, Referrals, and Statistics to a sub-menu or user dropdown, and ensuring navigation labels are clear and descriptive",
+      "files": [
+        "frontend/src/components/layout/MobileNav.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-45"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-enhance-search-and-filter-ux-on-tournamentdashboard-by-making-the-tournamentfilters-component-more-intuitive-with-larger-touch-targets-for-filter-options-adding-real-time-result-count-updates-as-filters-are-applied-providing-clear-visual-feedback-when-filters-are-active-adding-a-clear-all-filters-button-for-easy-reset-and-improving-the-layout-for-better-mobile-usability",
+      "featureTitle": "Enhance search and filter UX on TournamentDashboard by making the TournamentFilters component more intuitive with larger touch targets for filter options, adding real-time result count updates as filters are applied, providing clear visual feedback when filters are active, adding a 'Clear All Filters' button for easy reset, and improving the layout for better mobile usability",
+      "files": [
+        "frontend/src/components/tournaments/TournamentDashboard.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-46"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-shortcuts-and-quick-access-features-to-frequently-used-sections-by-creating-a-quick-actions-floating-action-button-or-menu-that-provides-one-click-access-to-my-tournaments-register-for-tournament-check-wallet-balance-and-view-notifications-positioned-strategically-for-easy-thumb-reach-on-mobile-devices",
+      "featureTitle": "Add shortcuts and quick access features to frequently used sections by creating a 'Quick Actions' floating action button or menu that provides one-click access to My Tournaments, Register for Tournament, Check Wallet Balance, and View Notifications, positioned strategically for easy thumb reach on mobile devices",
+      "files": [
+        "frontend/src/components/common/QuickActionsMenu.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-47"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-streamline-wallet-transaction-flow-on-walletpage-by-redesigning-deposit-and-withdrawal-cards-with-simplified-forms-requiring-fewer-fields-adding-visual-feedback-for-pending-transactions-improving-transaction-history-display-with-better-categorization-and-filtering-options-and-making-transaction-details-easier-to-understand-with-clear-labels-and-formatting",
+      "featureTitle": "Streamline wallet transaction flow on WalletPage by redesigning deposit and withdrawal cards with simplified forms requiring fewer fields, adding visual feedback for pending transactions, improving transaction history display with better categorization and filtering options, and making transaction details easier to understand with clear labels and formatting",
+      "files": [
+        "frontend/src/utils/formatters.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-48"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-smooth-page-transitions-throughout-the-application-using-fade-in-animations-when-navigating-between-routes-smooth-slide-in-animations-for-modals-and-side-panels-gentle-fade-animations-for-content-appearing-after-loading-and-ensuring-all-transitions-are-hardware-accelerated-for-60fps-performance",
+      "featureTitle": "Implement smooth page transitions throughout the application using fade-in animations when navigating between routes, smooth slide-in animations for modals and side panels, gentle fade animations for content appearing after loading, and ensuring all transitions are hardware-accelerated for 60fps performance",
+      "files": [
+        "frontend/src/components/common/ModalTransition.tsx",
+        "frontend/src/components/common/PageTransition.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-49"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-improve-contrast-and-readability-across-all-ui-components-by-ensuring-text-meets-wcag-aa-contrast-standards-4-5-1-for-normal-text-3-1-for-large-text-against-dark-backgrounds-increasing-font-sizes-for-critical-information-like-prize-pools-and-tournament-titles-adjusting-neon-colors-where-they-compromise-readability-and-ensuring-all-interactive-elements-have-sufficient-visual-weight",
+      "featureTitle": "Improve contrast and readability across all UI components by ensuring text meets WCAG AA contrast standards (4.5:1 for normal text, 3:1 for large text) against dark backgrounds, increasing font sizes for critical information like prize pools and tournament titles, adjusting neon colors where they compromise readability, and ensuring all interactive elements have sufficient visual weight",
+      "files": [
+        "frontend/src/components/tournaments/TournamentCard.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-50"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-consistent-spacing-and-alignment-across-all-pages-and-components-by-establishing-a-unified-spacing-system-using-multiples-of-4px-4-8-16-24-32px-ensuring-consistent-padding-and-margins-for-cards-and-containers-aligning-form-elements-consistently-standardizing-gap-spacing-in-grid-and-flex-layouts-and-maintaining-consistent-component-sizing-throughout-the-application",
+      "featureTitle": "Apply consistent spacing and alignment across all pages and components by establishing a unified spacing system using multiples of 4px (4, 8, 16, 24, 32px), ensuring consistent padding and margins for cards and containers, aligning form elements consistently, standardizing gap spacing in grid and flex layouts, and maintaining consistent component sizing throughout the application",
+      "files": [
+        "frontend/src/components/tournaments/TournamentCard.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-51"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-engaging-button-states-with-clear-visual-feedback-by-implementing-hover-effects-with-neon-glow-intensification-active-pressed-states-with-subtle-scale-transform-disabled-states-with-reduced-opacity-and-grayscale-filter-loading-states-with-spinner-animations-and-ensuring-all-state-transitions-are-smooth-with-150-200ms-duration",
+      "featureTitle": "Create engaging button states with clear visual feedback by implementing hover effects with neon glow intensification, active/pressed states with subtle scale transform, disabled states with reduced opacity and grayscale filter, loading states with spinner animations, and ensuring all state transitions are smooth with 150-200ms duration",
+      "files": [
+        "frontend/src/components/common/LoadingButton.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-52"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-a-new-enhanced-sponsor-visibility-system-completely-separate-from-existing-code-11-branding-that-displays-animated-sponsor-banners-on-all-major-pages-including-tournamentdashboard-tournamentdetailpage-admindashboard-leaderboardpage-profilepage-walletpage-notificationspage-statisticsdashboard-squadspage-and-referraldashboard-featuring-eye-catching-animations-like-slide-in-fade-pulse-or-subtle-scale-effects-prominent-placement-in-header-or-hero-sections-and-clear-sponsor-logo-and-text-that-makes-code-11-sponsorship-highly-visible-and-engaging",
+      "featureTitle": "Build a new enhanced sponsor visibility system completely separate from existing Code 11 branding that displays animated sponsor banners on all major pages including TournamentDashboard, TournamentDetailPage, AdminDashboard, LeaderboardPage, ProfilePage, WalletPage, NotificationsPage, StatisticsDashboard, SquadsPage, and ReferralDashboard, featuring eye-catching animations like slide-in, fade pulse, or subtle scale effects, prominent placement in header or hero sections, and clear sponsor logo and text that makes Code 11 sponsorship highly visible and engaging",
+      "files": [
+        "frontend/src/components/sponsor/SponsorBanner.tsx",
+        "frontend/src/components/tournaments/TournamentDashboard.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-53"
       ],
       "confidence": "high"
     }
