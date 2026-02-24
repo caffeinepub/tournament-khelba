@@ -1,0 +1,64 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Tournament Room ID/Password System & Full Admin Editing",
+  "requirements": [
+    {
+      "id": "REQ-4",
+      "summary": "Replace TournamentManagementPanel with full tournament management UI including Edit functionality for all tournament fields (name, date/time, prize pool, game type, max players, Room ID, Room Password, visibility window)",
+      "acceptanceCriteria": [
+        "All existing tournaments are listed in the admin panel",
+        "Each tournament has an Edit button that opens a pre-filled edit form/modal",
+        "Edit form includes Room ID, Room Password, and Visibility Window (minutes) fields",
+        "Submitting the form calls updateTournament and shows a success/error toast",
+        "The list refreshes after a successful update"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/TournamentManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Transform the panel from creation-only to full CRUD management. Add a tournament list section that displays all tournaments fetched via useListTournaments. For each tournament row, add an Edit button that opens an edit modal/dialog. Create an EditTournamentModal component (inline or separate) that pre-fills all fields including the new roomId (text), roomPassword (text), and roomVisibilityMinutes (number input for minutes before start). Wire the edit form submission to call the useUpdateTournament mutation hook. Show success/error toasts on completion and refresh the tournament list on success."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Add useUpdateTournament React Query mutation hook that calls updateTournament backend function and invalidates tournament queries on success",
+      "acceptanceCriteria": [
+        "useUpdateTournament mutation hook is exported from useTournamentQueries.ts",
+        "On success, tournament list and detail queries are invalidated",
+        "Loading and error states are exposed by the hook"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useTournamentQueries.ts",
+          "operation": "modify",
+          "description": "Add a new useUpdateTournament mutation hook using useMutation from React Query. The mutation function should accept a TournamentUpdate object (matching the backend interface type) and call actor.updateTournament(update). On success, invalidate both the ['tournaments'] query key (for the list) and the ['tournament', tournamentId] query key (for individual detail pages). Expose isLoading, error, and mutate states. Use the authorization component pattern to ensure only authenticated admins can call this function (the backend enforces this, but show appropriate UI feedback for unauthorized attempts)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Implement auto-reveal logic for Room ID and Password in TournamentDetailPage based on current time, roomVisibilityMinutes, and user registration status",
+      "acceptanceCriteria": [
+        "Registered players see Room ID and Password once current time >= (startTime - roomVisibilityMinutes)",
+        "Before the visibility window opens, registered players see a message/countdown showing when credentials will be revealed",
+        "Non-registered users see no room credentials at any time",
+        "Room ID and Password each have a copy-to-clipboard button when visible",
+        "The reveal check updates in real time (polling or interval) without requiring a page reload"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "operation": "modify",
+          "description": "Add a RoomCredentials section below the tournament details. Implement time-based reveal logic: compute the reveal timestamp as (tournament.startDate - (tournament.roomVisibilityMinutes * 60 * 1000)). Use a useEffect with setInterval (every 30-60 seconds) to check if Date.now() >= revealTimestamp. If the user is a registered participant (check via a backend query or existing registration state) AND the reveal window is open, display the Room ID and Room Password fields with copy-to-clipboard buttons using the Clipboard icon from lucide-react. If the user is registered but the window is not yet open, show a countdown message indicating when credentials will be revealed (e.g., 'Room credentials will be revealed in X minutes'). If the user is not registered, show no room credential UI at all. Ensure the component safely handles missing roomId, roomPassword, or roomVisibilityMinutes fields (treat them as not configured and show an appropriate message to registered users)."
+        },
+        {
+          "path": "frontend/src/hooks/useTournamentQueries.ts",
+          "operation": "modify",
+          "description": "Add a useIsUserRegistered query hook that accepts a tournamentId and returns a boolean indicating whether the current user is registered for that tournament. This hook should call a backend function (if one exists) or check a local registration state. The TournamentDetailPage will use this hook to determine whether to show room credentials. Ensure the hook is reactive and refetches when the user's registration status changes."
+        }
+      ]
+    }
+  ]
+}

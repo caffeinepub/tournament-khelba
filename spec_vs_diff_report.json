@@ -1,0 +1,46 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-24T14:47:24.634Z",
+  "summary": "The diff implements nearly all requested requirements. REQ-1 through REQ-6 are substantially addressed: backend model extended with new fields, updateTournament function added, migration module created, TournamentManagementPanel updated with edit UI, useUpdateTournament hook added, and TournamentDetailPage has auto-reveal logic. However, there are notable gaps: REQ-3 defaults new fields to null rather than empty strings / 0 as specified; REQ-6 registration check always returns false making the reveal logic non-functional for actual players.",
+  "missing_requirements": [
+    {
+      "id": "REQ-3",
+      "requirement": "New fields default to empty strings / 0 on existing records during migration",
+      "reason": "The migration module sets roomId = null, roomPassword = null, roomVisibilityMinutes = null instead of empty strings and 0 as required by the acceptance criteria.",
+      "evidence": [
+        "backend/migration.mo"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Registered players see Room ID and Password once current time >= (startTime - roomVisibilityMinutes)",
+      "reason": "The useIsUserRegistered hook always returns false because no user-facing registration check endpoint is implemented, meaning no player will ever see room credentials regardless of their actual registration status.",
+      "evidence": [
+        "frontend/src/hooks/useTournamentQueries.ts",
+        "frontend/src/components/tournaments/TournamentDetailPage.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Server-side maskRoomCredentials helper function in the backend actor that masks room credentials based on caller role and visibility window timing",
+      "reason": "The build request only specifies frontend-side reveal logic in REQ-6. A server-side masking function was not requested and introduces logic not described in any requirement.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "confidence": 0.82,
+  "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/components/admin/TournamentManagementPanel.tsx",
+    "frontend/src/components/statistics/StatisticsDashboard.tsx",
+    "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/hooks/useTournamentQueries.ts",
+    "project_state.json"
+  ]
+}

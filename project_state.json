@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Tournament platform with admin management. Features include full admin editing of all tournament fields at any time, manual Room ID & Password entry by admins, configurable visibility window (admin sets how many minutes before start time Room ID/Password are revealed to players), and auto-reveal logic for Room ID/Password.",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-replace-the-tournamentmanagementpanel-s-tournament-creation-only-form-with-a-full-tournament-management-ui-that-lists-all-existing-tournaments-and-provides-an-edit-button-for-each-the-edit-form-must-include-all-tournament-fields-name-date-time-prize-pool-game-type-max-players-room-id-room-password-and-a-numeric-field-for-visibility-window-minutes-before-start-the-form-must-submit-updates-via-the-updatetournament-backend-call",
+      "title": "Replace the TournamentManagementPanel's tournament creation-only form with a full tournament management UI that lists all existing tournaments and provides an Edit button for each. The edit form must include all tournament fields: name, date/time, prize pool, game type, max players, Room ID, Room Password, and a numeric field for visibility window (minutes before start). The form must submit updates via the updateTournament backend call.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-react-query-hook-useupdatetournament-in-usetournamentqueries-ts-that-calls-the-updatetournament-backend-function-and-invalidates-the-tournament-list-and-individual-tournament-queries-on-success",
+      "title": "Add a React Query hook (useUpdateTournament) in useTournamentQueries.ts that calls the updateTournament backend function and invalidates the tournament list and individual tournament queries on success.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-tournamentdetailpage-implement-auto-reveal-logic-for-room-id-and-password-compare-the-current-time-against-tournament-start-time-minus-roomvisibilityminutes-if-the-current-time-is-within-the-visibility-window-and-the-user-is-a-registered-participant-of-that-tournament-display-the-room-id-and-room-password-outside-the-window-show-a-countdown-indicating-when-credentials-will-be-revealed-if-the-user-is-not-registered-do-not-show-credentials-at-all",
+      "title": "In the TournamentDetailPage, implement auto-reveal logic for Room ID and Password: compare the current time against (tournament start time minus roomVisibilityMinutes). If the current time is within the visibility window AND the user is a registered participant of that tournament, display the Room ID and Room Password. Outside the window, show a countdown indicating when credentials will be revealed. If the user is not registered, do not show credentials at all.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Full admin editing of all tournament fields (name, date/time, prize pool, game type, max players, Room ID, Password, visibility window, etc.) at any time after creation",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Manual Room ID and Password entry by admins on tournament edit page, updatable anytime",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Configurable visibility window: admin sets how many minutes before tournament start the Room ID and Password become visible to registered players",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Auto-reveal logic: Room ID and Password automatically appear to players once the configured countdown window is reached",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Extend the tournament data model in the backend to include the following new fields: roomId (Text), roomPassword (Text), and roomVisibilityMinutes (Nat — number of minutes before start time when room credentials become visible to players). All fields should be optional at creation and updatable at any time.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Add an updateTournament backend function that allows admins to edit all tournament fields including name, date/time, prize pool, game type, max players, roomId, roomPassword, and roomVisibilityMinutes. The function must enforce admin-only access and accept a partial or full update record.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Update the migration module to handle the new roomId, roomPassword, and roomVisibilityMinutes fields on existing tournament records, defaulting them to empty strings and zero respectively.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Tournament Khelba",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

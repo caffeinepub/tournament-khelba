@@ -1,0 +1,138 @@
+{
+  "kind": "build_request",
+  "title": "Tournament Room ID/Password System & Full Admin Editing",
+  "projectName": "Tournament Khelba",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Extend the tournament data model in the backend to include the following new fields: roomId (Text), roomPassword (Text), and roomVisibilityMinutes (Nat — number of minutes before start time when room credentials become visible to players). All fields should be optional at creation and updatable at any time.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-7",
+          "msg-9"
+        ],
+        "quotes": [
+          "Admins will manually enter room I'd and password",
+          "Admin will configure how early it shows"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Tournament record includes roomId, roomPassword, and roomVisibilityMinutes fields",
+        "Fields default to empty/null if not set at creation",
+        "Fields persist correctly across updates"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add an updateTournament backend function that allows admins to edit all tournament fields including name, date/time, prize pool, game type, max players, roomId, roomPassword, and roomVisibilityMinutes. The function must enforce admin-only access and accept a partial or full update record.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-7",
+          "msg-9"
+        ],
+        "quotes": [
+          "Yes",
+          "every tournament can be edited anytime by admin after it is created"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Only authenticated admins can call updateTournament",
+        "All tournament fields (including room credentials and visibility window) can be updated via a single call",
+        "Non-admin calls return an authorization error",
+        "Updated values are immediately reflected when fetching the tournament"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Update the migration module to handle the new roomId, roomPassword, and roomVisibilityMinutes fields on existing tournament records, defaulting them to empty strings and zero respectively.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-9"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Existing tournaments are migrated without data loss",
+        "New fields default to empty strings / 0 on existing records",
+        "Migration runs cleanly on canister upgrade"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Replace the TournamentManagementPanel's tournament creation-only form with a full tournament management UI that lists all existing tournaments and provides an Edit button for each. The edit form must include all tournament fields: name, date/time, prize pool, game type, max players, Room ID, Room Password, and a numeric field for visibility window (minutes before start). The form must submit updates via the updateTournament backend call.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-7",
+          "msg-9"
+        ],
+        "quotes": [
+          "every tournament can be edited anytime by admin after it is created",
+          "Admins will manually enter room I'd and password",
+          "Admin will configure how early it shows"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All existing tournaments are listed in the admin panel",
+        "Each tournament has an Edit button that opens a pre-filled edit form/modal",
+        "Edit form includes Room ID, Room Password, and Visibility Window (minutes) fields",
+        "Submitting the form calls updateTournament and shows a success/error toast",
+        "The list refreshes after a successful update"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Add a React Query hook (useUpdateTournament) in useTournamentQueries.ts that calls the updateTournament backend function and invalidates the tournament list and individual tournament queries on success.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-9"
+        ]
+      },
+      "acceptanceCriteria": [
+        "useUpdateTournament mutation hook is exported from useTournamentQueries.ts",
+        "On success, tournament list and detail queries are invalidated",
+        "Loading and error states are exposed by the hook"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "In the TournamentDetailPage, implement auto-reveal logic for Room ID and Password: compare the current time against (tournament start time minus roomVisibilityMinutes). If the current time is within the visibility window AND the user is a registered participant of that tournament, display the Room ID and Room Password. Outside the window, show a countdown indicating when credentials will be revealed. If the user is not registered, do not show credentials at all.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5",
+          "msg-9"
+        ],
+        "quotes": [
+          "the room id and pass will be visible 10-15 minutes before tournament start",
+          "Admin will configure how early it shows"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Registered players see Room ID and Password once current time >= (startTime - roomVisibilityMinutes)",
+        "Before the visibility window opens, registered players see a message/countdown showing when credentials will be revealed",
+        "Non-registered users see no room credentials at any time",
+        "Room ID and Password each have a copy-to-clipboard button when visible",
+        "The reveal check updates in real time (polling or interval) without requiring a page reload"
+      ]
+    }
+  ],
+  "constraints": [
+    "All Motoko logic must remain in the single backend/main.mo actor",
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
+    "Room ID and Password must never be visible to non-registered players regardless of timing"
+  ],
+  "nonGoals": [
+    "Auto-generating Room ID or Password — admins always enter these manually",
+    "Real-time WebSocket-based reveal — polling or time-based interval is sufficient",
+    "Leaderboard, wallet, referral, or statistics features"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-24T14:47:24.637Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 6,
+    "implemented": 3,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Extend the tournament data model in the backend to include the following new fields: roomId (Text), roomPassword (Text), and roomVisibilityMinutes (Nat — number of minutes before start time when room credentials become visible to players). All fields should be optional at creation and updatable at any time.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add an updateTournament backend function that allows admins to edit all tournament fields including name, date/time, prize pool, game type, max players, roomId, roomPassword, and roomVisibilityMinutes. The function must enforce admin-only access and accept a partial or full update record.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Update the migration module to handle the new roomId, roomPassword, and roomVisibilityMinutes fields on existing tournament records, defaulting them to empty strings and zero respectively.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Replace the TournamentManagementPanel's tournament creation-only form with a full tournament management UI that lists all existing tournaments and provides an Edit button for each. The edit form must include all tournament fields: name, date/time, prize pool, game type, max players, Room ID, Room Password, and a numeric field for visibility window (minutes before start). The form must submit updates via the updateTournament backend call.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/admin/TournamentManagementPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/admin/TournamentManagementPanel.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Add a React Query hook (useUpdateTournament) in useTournamentQueries.ts that calls the updateTournament backend function and invalidates the tournament list and individual tournament queries on success.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useTournamentQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useTournamentQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "In the TournamentDetailPage, implement auto-reveal logic for Room ID and Password: compare the current time against (tournament start time minus roomVisibilityMinutes). If the current time is within the visibility window AND the user is a registered participant of that tournament, display the Room ID and Room Password. Outside the window, show a countdown indicating when credentials will be revealed. If the user is not registered, do not show credentials at all.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/hooks/useTournamentQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+          "frontend/src/hooks/useTournamentQueries.ts"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/admin/TournamentManagementPanel.tsx",
+    "frontend/src/components/statistics/StatisticsDashboard.tsx",
+    "frontend/src/components/tournaments/TournamentDetailPage.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/hooks/useTournamentQueries.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
