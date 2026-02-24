@@ -2,29 +2,34 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { useInternetIdentity } from './useInternetIdentity';
 import type { UserProfile } from '../backend';
-import { UserRole } from '../backend';
-import { Principal } from '@dfinity/principal';
-
-// Define PlayerProfile type locally since backend doesn't export it
-export interface PlayerProfile {
-  name: string;
-  freeFireUid: string | null;
-}
 
 // Re-export UserProfile for convenience
 export type { UserProfile };
 
-// ─── User Profile (new full CRUD) ────────────────────────────────────────────
+// ─── User Profile Hooks ───────────────────────────────────────────────────────
 
 export function useGetMyProfile() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<UserProfile | null>({
+    queryKey: ['myProfile'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getMyProfile();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
   const { identity } = useInternetIdentity();
 
   const query = useQuery<UserProfile | null>({
-    queryKey: ['myProfile'],
+    queryKey: ['currentUserProfile'],
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
-      return actor.getMyProfile();
+      return actor.getCallerUserProfile();
     },
     enabled: !!actor && !actorFetching && !!identity,
     retry: false,
@@ -85,29 +90,6 @@ export function useDeleteProfile() {
   });
 }
 
-// ─── Legacy / authorization component hooks ──────────────────────────────────
-
-export function useGetCallerUserProfile() {
-  const { actor, isFetching: actorFetching } = useActor();
-  const { identity } = useInternetIdentity();
-
-  const query = useQuery<UserProfile | null>({
-    queryKey: ['currentUserProfile'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getCallerUserProfile();
-    },
-    enabled: !!actor && !actorFetching && !!identity,
-    retry: false,
-  });
-
-  return {
-    ...query,
-    isLoading: actorFetching || query.isLoading,
-    isFetched: !!actor && query.isFetched,
-  };
-}
-
 export function useSaveCallerUserProfile() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
@@ -140,7 +122,8 @@ export function useProfileCompleteness() {
   });
 }
 
-// Tournament Registration Mutation — submits a payment for the tournament
+// ─── Payment Registration Hook ────────────────────────────────────────────────
+
 export function useRegisterForTournament() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
@@ -157,28 +140,8 @@ export function useRegisterForTournament() {
   });
 }
 
-// Admin Check Hook - uses backend isCallerAdmin function
-export function useAdminCheck() {
-  const { actor, isFetching: actorFetching } = useActor();
-  const { identity } = useInternetIdentity();
+// ─── Principal Hook ───────────────────────────────────────────────────────────
 
-  const query = useQuery<boolean>({
-    queryKey: ['isAdmin'],
-    queryFn: async () => {
-      if (!actor) return false;
-      return actor.isCallerAdmin();
-    },
-    enabled: !!actor && !actorFetching && !!identity,
-    retry: false,
-  });
-
-  return {
-    isAdmin: query.data ?? false,
-    isLoading: actorFetching || query.isLoading,
-  };
-}
-
-// Get My Principal ID — derived from identity, no actor call needed
 export function useGetMyPrincipal() {
   const { identity } = useInternetIdentity();
 
@@ -192,46 +155,16 @@ export function useGetMyPrincipal() {
   });
 }
 
-// Add Admin Mutation — assigns admin role to a user by principal text
-export function useAddAdmin() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
+// ─── Admin Check (re-exported from useAdminCheck for backward compat) ─────────
 
-  return useMutation({
-    mutationFn: async (principalText: string) => {
-      if (!actor) throw new Error('Actor not available');
-      const principal = Principal.fromText(principalText);
-      await actor.assignCallerUserRole(principal, UserRole.admin);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
-    },
-  });
-}
+export { useAdminCheck } from './useAdminCheck';
 
-// Remove Admin Mutation — demotes a user to regular user role
-export function useRemoveAdmin() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
+// ─── Admin mutations (re-exported from useAdminQueries for backward compat) ───
 
-  return useMutation({
-    mutationFn: async (principalText: string) => {
-      if (!actor) throw new Error('Actor not available');
-      const principal = Principal.fromText(principalText);
-      await actor.assignCallerUserRole(principal, UserRole.user);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
-    },
-  });
-}
+export { useAddAdmin, useRemoveAdmin } from './useAdminQueries';
 
-// Legacy Admin Check (for backward compatibility)
-export function useIsCallerAdmin() {
-  return useAdminCheck();
-}
+// ─── Notifications ────────────────────────────────────────────────────────────
 
-// Notifications
 export function useGetNotifications() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -247,7 +180,7 @@ export function useGetNotifications() {
 
 export function useGetUnreadNotificationCount() {
   const { data: notifications } = useGetNotifications();
-  return notifications?.filter(n => !n.read).length || 0;
+  return notifications?.filter((n: any) => !n.read).length || 0;
 }
 
 export function useMarkNotificationAsRead() {
@@ -264,7 +197,8 @@ export function useMarkNotificationAsRead() {
   });
 }
 
-// Player Statistics
+// ─── Player Statistics ────────────────────────────────────────────────────────
+
 export function useGetPlayerStatistics() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -278,7 +212,8 @@ export function useGetPlayerStatistics() {
   });
 }
 
-// Player Rank
+// ─── Player Rank ──────────────────────────────────────────────────────────────
+
 export function useGetPlayerRank() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -292,7 +227,8 @@ export function useGetPlayerRank() {
   });
 }
 
-// Tournament Comments
+// ─── Tournament Comments ──────────────────────────────────────────────────────
+
 export function useGetTournamentComments(tournamentId: string) {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -321,7 +257,8 @@ export function usePostComment() {
   });
 }
 
-// Squads
+// ─── Squads ───────────────────────────────────────────────────────────────────
+
 export function useGetCurrentSquad() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -454,7 +391,8 @@ export function useRegisterSquadForTournament() {
   });
 }
 
-// Referrals
+// ─── Referrals ────────────────────────────────────────────────────────────────
+
 export function useGetReferralStats() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -479,7 +417,8 @@ export function useValidateReferralCode() {
   });
 }
 
-// Featured Tournaments
+// ─── Featured Tournaments ─────────────────────────────────────────────────────
+
 export function useGetFeaturedTournaments() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -493,7 +432,8 @@ export function useGetFeaturedTournaments() {
   });
 }
 
-// Practice Matches
+// ─── Practice Matches ─────────────────────────────────────────────────────────
+
 export function useGetPracticeMatches() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -522,7 +462,8 @@ export function useRegisterForPracticeMatch() {
   });
 }
 
-// Tournament Templates (Admin)
+// ─── Tournament Templates (Admin) ─────────────────────────────────────────────
+
 export function useGetTournamentTemplates() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -566,7 +507,8 @@ export function useDeleteTemplate() {
   });
 }
 
-// Bulk Tournament Creation (Admin)
+// ─── Bulk Tournament Creation (Admin) ─────────────────────────────────────────
+
 export function useBulkCreateTournaments() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
@@ -583,7 +525,8 @@ export function useBulkCreateTournaments() {
   });
 }
 
-// User Verification (Admin)
+// ─── User Verification (Admin) ────────────────────────────────────────────────
+
 export function useVerifyUserUID() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
@@ -614,7 +557,14 @@ export function useVerifyUserPayment() {
   });
 }
 
-// Tournament type definition (local mock type, separate from backend Tournament)
+// ─── Legacy Admin Check (for backward compatibility) ─────────────────────────
+
+export function useIsCallerAdmin() {
+  return useAdminCheck();
+}
+
+// ─── Mock Tournament type (for legacy components) ─────────────────────────────
+
 export interface MockTournament {
   id: string;
   mode: 'Solo' | 'Duo' | 'Squad';
@@ -634,216 +584,192 @@ export interface MockTournament {
 // Legacy Tournament alias kept for components that still reference it
 export type Tournament = MockTournament;
 
-// Mock data for demonstration
+// ─── Mock Data ────────────────────────────────────────────────────────────────
+
 export const MOCK_TOURNAMENTS: MockTournament[] = [
   {
-    id: '1',
+    id: 'mock-1',
     mode: 'Solo',
     entryFee: 50,
-    prizePool: 1000,
+    prizePool: 5000,
     maxSlots: 100,
     registeredPlayers: 67,
     startTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-    roomId: 'FF-SOLO-001',
-    roomPassword: 'PASS123',
-    status: 'upcoming',
-    isFeatured: false,
-    isPractice: false,
-  },
-  {
-    id: '2',
-    mode: 'Duo',
-    entryFee: 100,
-    prizePool: 2500,
-    maxSlots: 50,
-    registeredPlayers: 42,
-    startTime: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
-    roomId: 'FF-DUO-002',
-    roomPassword: 'DUO456',
+    roomId: 'ROOM123',
+    roomPassword: 'pass123',
     status: 'upcoming',
     isFeatured: true,
-    isPractice: false,
     sponsor: 'Code 11',
   },
   {
-    id: '3',
-    mode: 'Squad',
-    entryFee: 200,
-    prizePool: 5000,
-    maxSlots: 25,
-    registeredPlayers: 25,
-    startTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-    roomId: 'FF-SQUAD-003',
-    roomPassword: 'SQUAD789',
-    status: 'ongoing',
+    id: 'mock-2',
+    mode: 'Duo',
+    entryFee: 100,
+    prizePool: 10000,
+    maxSlots: 50,
+    registeredPlayers: 32,
+    startTime: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
+    roomId: 'ROOM456',
+    roomPassword: 'pass456',
+    status: 'upcoming',
     isFeatured: true,
-    isPractice: false,
   },
   {
-    id: '4',
+    id: 'mock-3',
+    mode: 'Squad',
+    entryFee: 200,
+    prizePool: 20000,
+    maxSlots: 25,
+    registeredPlayers: 18,
+    startTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    roomId: 'ROOM789',
+    roomPassword: 'pass789',
+    status: 'upcoming',
+  },
+  {
+    id: 'mock-4',
     mode: 'Solo',
     entryFee: 0,
     prizePool: 0,
-    maxSlots: 50,
-    registeredPlayers: 12,
+    maxSlots: 100,
+    registeredPlayers: 45,
     startTime: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
-    roomId: 'FF-PRAC-004',
-    roomPassword: 'PRAC000',
+    roomId: 'PRACTICE1',
+    roomPassword: 'practice',
     status: 'upcoming',
-    isFeatured: false,
     isPractice: true,
   },
 ];
 
-export const MOCK_FEATURED_TOURNAMENTS: MockTournament[] = MOCK_TOURNAMENTS.filter(t => t.isFeatured);
-export const MOCK_PRACTICE_MATCHES: MockTournament[] = MOCK_TOURNAMENTS.filter(t => t.isPractice);
+const MOCK_FEATURED_TOURNAMENTS: MockTournament[] = MOCK_TOURNAMENTS.filter(t => t.isFeatured);
+const MOCK_PRACTICE_MATCHES: MockTournament[] = MOCK_TOURNAMENTS.filter(t => t.isPractice);
 
-// Mock Notifications
-export interface MockNotification {
-  id: string;
-  title: string;
-  message: string;
-  type: 'tournamentUpdate' | 'resultAnnouncement' | 'reminder' | 'registrationConfirmation' | 'systemNotification';
-  read: boolean;
-  createdAt: string;
-}
+const MOCK_TOURNAMENT_TEMPLATES = [
+  { id: 'tpl-1', name: 'Solo Blitz', mode: 'Solo', entryFee: 50, prizePool: 5000, maxSlots: 100 },
+  { id: 'tpl-2', name: 'Duo Classic', mode: 'Duo', entryFee: 100, prizePool: 10000, maxSlots: 50 },
+];
 
-export const MOCK_NOTIFICATIONS: MockNotification[] = [
+const MOCK_NOTIFICATIONS = [
   {
-    id: '1',
-    title: 'Tournament Starting Soon',
-    message: 'Solo Championship #1 starts in 30 minutes. Get ready!',
-    type: 'reminder',
-    read: false,
-    createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-  },
-  {
-    id: '2',
-    title: 'Registration Confirmed',
-    message: 'You have successfully registered for Duo Battle #5.',
+    id: 'notif-1',
     type: 'registrationConfirmation',
+    message: 'Your registration for Solo Tournament has been confirmed!',
+    timestamp: new Date(Date.now() - 30 * 60 * 1000),
     read: false,
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
   },
   {
-    id: '3',
-    title: 'Results Announced',
-    message: 'Squad Showdown results are now available. Check your ranking!',
+    id: 'notif-2',
+    type: 'reminder',
+    message: 'Tournament starts in 2 hours. Get ready!',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    read: false,
+  },
+  {
+    id: 'notif-3',
     type: 'resultAnnouncement',
+    message: 'Results for last week\'s Squad Tournament are now available.',
+    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
     read: true,
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
   },
   {
-    id: '4',
-    title: 'New Tournament Available',
-    message: 'A new Battle Royale tournament has been created. Register now!',
+    id: 'notif-4',
     type: 'tournamentUpdate',
+    message: 'Duo Tournament prize pool has been increased to ৳15,000!',
+    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     read: true,
-    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
-// Mock Player Stats
-export const MOCK_PLAYER_STATS = {
+const MOCK_PLAYER_STATS = {
   tournamentsPlayed: 24,
   wins: 7,
-  totalKills: 312,
-  winRate: 29.2,
-  avgKills: 13,
+  winRate: 29,
+  avgKills: 4.2,
   earnings: 12500,
   history: [
-    { month: 'Sep', winRate: 22 },
-    { month: 'Oct', winRate: 25 },
-    { month: 'Nov', winRate: 28 },
-    { month: 'Dec', winRate: 24 },
-    { month: 'Jan', winRate: 31 },
-    { month: 'Feb', winRate: 29 },
+    { month: 'Jan', winRate: 20 },
+    { month: 'Feb', winRate: 25 },
+    { month: 'Mar', winRate: 22 },
+    { month: 'Apr', winRate: 30 },
+    { month: 'May', winRate: 28 },
+    { month: 'Jun', winRate: 35 },
   ],
   killsHistory: [
-    { tournament: 'T1', kills: 8 },
-    { tournament: 'T2', kills: 15 },
-    { tournament: 'T3', kills: 11 },
-    { tournament: 'T4', kills: 18 },
-    { tournament: 'T5', kills: 9 },
-    { tournament: 'T6', kills: 14 },
+    { tournament: 'T1', kills: 3 },
+    { tournament: 'T2', kills: 6 },
+    { tournament: 'T3', kills: 2 },
+    { tournament: 'T4', kills: 8 },
+    { tournament: 'T5', kills: 5 },
+    { tournament: 'T6', kills: 4 },
   ],
   earningsHistory: [
-    { month: 'Sep', earnings: 1500 },
-    { month: 'Oct', earnings: 2200 },
-    { month: 'Nov', earnings: 1800 },
-    { month: 'Dec', earnings: 3000 },
-    { month: 'Jan', earnings: 2500 },
-    { month: 'Feb', earnings: 1500 },
+    { month: 'Jan', earnings: 0 },
+    { month: 'Feb', earnings: 2000 },
+    { month: 'Mar', earnings: 1500 },
+    { month: 'Apr', earnings: 3000 },
+    { month: 'May', earnings: 2500 },
+    { month: 'Jun', earnings: 3500 },
   ],
 };
 
-// Mock Player Rank
-export const MOCK_PLAYER_RANK = {
+const MOCK_PLAYER_RANK = {
   rank: 42,
   tier: 'Gold',
-  points: 2840,
-  nextTierPoints: 3000,
+  points: 1250,
+  nextTierPoints: 1500,
 };
 
-// Mock Comments
-export const MOCK_COMMENTS = [
+const MOCK_COMMENTS = [
   {
-    id: '1',
-    author: 'ProPlayer99',
-    content: 'This tournament looks amazing! Can\'t wait to compete.',
-    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+    id: 'c1',
+    author: 'ProGamer99',
+    message: 'This tournament looks amazing! Can\'t wait to compete.',
+    timestamp: new Date(Date.now() - 60 * 60 * 1000),
   },
   {
-    id: '2',
-    author: 'GamingLegend',
-    content: 'The prize pool is insane. Good luck everyone!',
-    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+    id: 'c2',
+    author: 'FireStorm',
+    message: 'Prize pool is insane. Good luck everyone!',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
   },
 ];
 
-// Mock Squad
-export const MOCK_SQUAD = {
+const MOCK_SQUAD = {
   id: 'squad-1',
   name: 'Alpha Squad',
   tag: 'ALPH',
-  captain: 'You',
+  captain: 'principal-1',
   totalTournaments: 12,
   wins: 4,
   members: [
-    { id: '1', name: 'You', role: 'Captain', kills: 145, wins: 4 },
-    { id: '2', name: 'ProSniper', role: 'Member', kills: 132, wins: 4 },
-    { id: '3', name: 'RushMaster', role: 'Member', kills: 98, wins: 3 },
-    { id: '4', name: 'SupportKing', role: 'Member', kills: 67, wins: 4 },
+    { id: 'm1', name: 'ProGamer99', role: 'Captain', kills: 156, wins: 4 },
+    { id: 'm2', name: 'FireStorm', role: 'Member', kills: 134, wins: 3 },
+    { id: 'm3', name: 'ShadowBlade', role: 'Member', kills: 98, wins: 2 },
+    { id: 'm4', name: 'NightHawk', role: 'Member', kills: 112, wins: 3 },
   ],
 };
 
-// Mock Squad Invitations
-export const MOCK_SQUAD_INVITATIONS = [
+const MOCK_SQUAD_INVITATIONS = [
   {
     id: 'inv-1',
-    squadName: 'Dragon Force',
-    squadTag: 'DRGN',
-    invitedBy: 'DragonLeader',
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    squadName: 'Dragon Squad',
+    invitedBy: 'DragonMaster',
+    timestamp: new Date(Date.now() - 30 * 60 * 1000),
   },
 ];
 
-// Mock Referral Stats
-export const MOCK_REFERRAL_STATS = {
-  referralCode: 'CODE11-REF-XYZ',
+const MOCK_REFERRAL_STATS = {
+  referralCode: 'KHELBA2024',
   totalReferrals: 8,
   completedReferrals: 5,
   pendingReferrals: 3,
-  totalEarnings: 400,
+  totalEarnings: 2500,
   referrals: [
-    { id: '1', name: 'Player123', status: 'completed', joinedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: '2', name: 'GamerX', status: 'completed', joinedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: '3', name: 'ProGamer', status: 'pending', joinedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'r1', name: 'Player123', status: 'completed', earnings: 500, date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+    { id: 'r2', name: 'GamerX', status: 'completed', earnings: 500, date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000) },
+    { id: 'r3', name: 'FireBolt', status: 'pending', earnings: 0, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
   ],
 };
 
-// Mock Tournament Templates
-export const MOCK_TOURNAMENT_TEMPLATES = [
-  { id: 'tmpl-1', name: 'Standard Solo', gameType: 'Solo', entryFee: 50, prizePool: 1000, maxParticipants: 100 },
-  { id: 'tmpl-2', name: 'Premium Squad', gameType: 'Squad', entryFee: 200, prizePool: 5000, maxParticipants: 25 },
-];
+// Re-import useAdminCheck here so the re-export above works
+import { useAdminCheck } from './useAdminCheck';

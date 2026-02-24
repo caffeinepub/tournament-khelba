@@ -123,6 +123,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'addAdmin' : ActorMethod<[Principal], undefined>,
   'approvePayment' : ActorMethod<[bigint], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createCheckoutSession' : ActorMethod<
@@ -146,26 +147,37 @@ export interface _SERVICE {
     ],
     bigint
   >,
+  'deleteOrCloseTournament' : ActorMethod<[bigint], undefined>,
   'deleteProfile' : ActorMethod<[], undefined>,
+  'getAdmins' : ActorMethod<[], Array<Principal>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getMyProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getStripeSessionStatus' : ActorMethod<[string], StripeSessionStatus>,
+  'getSuperAdmin' : ActorMethod<[], [] | [Principal]>,
   'getTournament' : ActorMethod<[bigint], [] | [Tournament]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'isAdmin' : ActorMethod<[Principal], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'isProfileComplete' : ActorMethod<[], boolean>,
   'isStripeConfigured' : ActorMethod<[], boolean>,
+  'isSuperAdmin' : ActorMethod<[Principal], boolean>,
   'listPaymentsByTournament' : ActorMethod<[bigint], Array<Payment>>,
   'listPendingPayments' : ActorMethod<[], Array<Payment>>,
   'listTournaments' : ActorMethod<[], Array<Tournament>>,
   'rejectPayment' : ActorMethod<[bigint], undefined>,
+  'removeAdmin' : ActorMethod<[Principal], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'setRoomCredentials' : ActorMethod<
+    [bigint, [] | [string], [] | [string], [] | [bigint]],
+    undefined
+  >,
   'setStripeConfiguration' : ActorMethod<[StripeConfiguration], undefined>,
   'submitPayment' : ActorMethod<[bigint], bigint>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
   'updateProfile' : ActorMethod<[UserProfile], undefined>,
   'updateTournament' : ActorMethod<[TournamentUpdate], undefined>,
+  'uploadResults' : ActorMethod<[bigint, string], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

@@ -1,6 +1,8 @@
 import { createRouter, RouterProvider, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import { useActor } from './hooks/useActor';
+import { useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import AppLayout from './components/layout/AppLayout';
 import TournamentDashboard from './components/tournaments/TournamentDashboard';
 import TournamentDetailPage from './components/tournaments/TournamentDetailPage';
@@ -16,10 +18,51 @@ import SquadsPage from './components/squads/SquadsPage';
 import ReferralDashboard from './components/referral/ReferralDashboard';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
+import { toast } from 'sonner';
 
 function RootComponent() {
   const { identity, isInitializing } = useInternetIdentity();
-  const { isFetching: actorFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useActor();
+  const queryClient = useQueryClient();
+  const claimAttemptedRef = useRef(false);
+
+  // After login + actor ready, silently attempt to claim super admin
+  // if none exists yet. This is a fire-and-forget operation.
+  useEffect(() => {
+    if (!identity || !actor || actorFetching || claimAttemptedRef.current) return;
+
+    claimAttemptedRef.current = true;
+
+    const attemptClaim = async () => {
+      try {
+        // Check if super admin already exists (query — fast)
+        const existingSuperAdmin = await actor.getSuperAdmin();
+        if (existingSuperAdmin !== null) {
+          // Super admin already set — nothing to do
+          return;
+        }
+
+        // No super admin yet — attempt to claim by calling addAdmin with own principal
+        const callerPrincipal = identity.getPrincipal();
+        await actor.addAdmin(callerPrincipal);
+
+        // Invalidate admin-related queries so UI refreshes immediately
+        queryClient.invalidateQueries({ queryKey: ['superAdmin'] });
+        queryClient.invalidateQueries({ queryKey: ['admins'] });
+        queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
+        queryClient.invalidateQueries({ queryKey: ['isSuperAdmin'] });
+
+        toast.success('You have been assigned as Super Admin!', {
+          description: 'You now have full administrative access.',
+          duration: 5000,
+        });
+      } catch {
+        // Silently swallow — super admin may have been set by a concurrent call
+      }
+    };
+
+    attemptClaim();
+  }, [identity, actor, actorFetching, queryClient]);
 
   if (isInitializing || actorFetching) {
     return (

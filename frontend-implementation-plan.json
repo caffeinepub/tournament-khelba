@@ -1,62 +1,54 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Tournament Room ID/Password System & Full Admin Editing",
+  "title": "Auto-assign super admin to first login",
   "requirements": [
     {
-      "id": "REQ-4",
-      "summary": "Replace TournamentManagementPanel with full tournament management UI including Edit functionality for all tournament fields (name, date/time, prize pool, game type, max players, Room ID, Room Password, visibility window)",
+      "id": "REQ-2",
+      "summary": "After login, automatically attempt to claim super admin if none exists, show success toast if assigned, and enable admin dashboard access immediately",
       "acceptanceCriteria": [
-        "All existing tournaments are listed in the admin panel",
-        "Each tournament has an Edit button that opens a pre-filled edit form/modal",
-        "Edit form includes Room ID, Room Password, and Visibility Window (minutes) fields",
-        "Submitting the form calls updateTournament and shows a success/error toast",
-        "The list refreshes after a successful update"
+        "After login, the app silently attempts to claim super admin if none exists.",
+        "If the logged-in user becomes super admin, a success toast is displayed (e.g., 'You have been assigned as Super Admin').",
+        "The admin dashboard becomes accessible immediately after auto-assignment without requiring a page refresh.",
+        "If a super admin already exists, no claim attempt UI or error is shown to regular users."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/admin/TournamentManagementPanel.tsx",
+          "path": "frontend/src/hooks/useActor.ts",
           "operation": "modify",
-          "description": "Transform the panel from creation-only to full CRUD management. Add a tournament list section that displays all tournaments fetched via useListTournaments. For each tournament row, add an Edit button that opens an edit modal/dialog. Create an EditTournamentModal component (inline or separate) that pre-fills all fields including the new roomId (text), roomPassword (text), and roomVisibilityMinutes (number input for minutes before start). Wire the edit form submission to call the useUpdateTournament mutation hook. Show success/error toasts on completion and refresh the tournament list on success."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Add useUpdateTournament React Query mutation hook that calls updateTournament backend function and invalidates tournament queries on success",
-      "acceptanceCriteria": [
-        "useUpdateTournament mutation hook is exported from useTournamentQueries.ts",
-        "On success, tournament list and detail queries are invalidated",
-        "Loading and error states are exposed by the hook"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useTournamentQueries.ts",
-          "operation": "modify",
-          "description": "Add a new useUpdateTournament mutation hook using useMutation from React Query. The mutation function should accept a TournamentUpdate object (matching the backend interface type) and call actor.updateTournament(update). On success, invalidate both the ['tournaments'] query key (for the list) and the ['tournament', tournamentId] query key (for individual detail pages). Expose isLoading, error, and mutate states. Use the authorization component pattern to ensure only authenticated admins can call this function (the backend enforces this, but show appropriate UI feedback for unauthorized attempts)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Implement auto-reveal logic for Room ID and Password in TournamentDetailPage based on current time, roomVisibilityMinutes, and user registration status",
-      "acceptanceCriteria": [
-        "Registered players see Room ID and Password once current time >= (startTime - roomVisibilityMinutes)",
-        "Before the visibility window opens, registered players see a message/countdown showing when credentials will be revealed",
-        "Non-registered users see no room credentials at any time",
-        "Room ID and Password each have a copy-to-clipboard button when visible",
-        "The reveal check updates in real time (polling or interval) without requiring a page reload"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/tournaments/TournamentDetailPage.tsx",
-          "operation": "modify",
-          "description": "Add a RoomCredentials section below the tournament details. Implement time-based reveal logic: compute the reveal timestamp as (tournament.startDate - (tournament.roomVisibilityMinutes * 60 * 1000)). Use a useEffect with setInterval (every 30-60 seconds) to check if Date.now() >= revealTimestamp. If the user is a registered participant (check via a backend query or existing registration state) AND the reveal window is open, display the Room ID and Room Password fields with copy-to-clipboard buttons using the Clipboard icon from lucide-react. If the user is registered but the window is not yet open, show a countdown message indicating when credentials will be revealed (e.g., 'Room credentials will be revealed in X minutes'). If the user is not registered, show no room credential UI at all. Ensure the component safely handles missing roomId, roomPassword, or roomVisibilityMinutes fields (treat them as not configured and show an appropriate message to registered users)."
+          "description": "Add logic to automatically call a super admin initialization check after the actor is created for an authenticated user. If the backend indicates the user has become super admin, invalidate the admin-related queries to refresh permissions immediately. This ensures the admin dashboard becomes accessible without requiring a manual page refresh."
         },
         {
-          "path": "frontend/src/hooks/useTournamentQueries.ts",
+          "path": "frontend/src/hooks/useAdminQueries.ts",
           "operation": "modify",
-          "description": "Add a useIsUserRegistered query hook that accepts a tournamentId and returns a boolean indicating whether the current user is registered for that tournament. This hook should call a backend function (if one exists) or check a local registration state. The TournamentDetailPage will use this hook to determine whether to show room credentials. Ensure the hook is reactive and refetches when the user's registration status changes."
+          "description": "Add a new mutation hook `useClaimSuperAdmin` that calls the backend super admin initialization capability. This hook should handle both success (user is now super admin) and silent failure (super admin already exists) cases. On success, the hook should display a success toast ('You have been assigned as Super Admin') and invalidate admin permission queries."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "After successful Internet Identity login, trigger the super admin claim attempt using the new hook. If the claim succeeds and the user becomes super admin, display the success toast and ensure the router can immediately navigate to admin routes without a refresh. Handle the flow so that if a super admin already exists, no error or UI feedback is shown to the user."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Replace manual principal ID entry in AdminSetup with an explanation of auto-assignment and a 'Log In & Claim Super Admin' button that triggers Internet Identity login",
+      "acceptanceCriteria": [
+        "AdminSetup no longer shows a manual principal ID input field.",
+        "A clear message explains the auto-assignment behavior.",
+        "A prominent call-to-action button initiates the Internet Identity login flow.",
+        "If super admin is already assigned and the current user is not super admin, the page shows an appropriate message."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/AdminSetup.tsx",
+          "operation": "modify",
+          "description": "Remove the principal ID input field and submission form. Replace with an explanation card that describes the auto-assignment behavior: 'The first user to log in will automatically become the Super Admin.' Add a prominent 'Log In & Claim Super Admin' button that triggers the Internet Identity login flow. Use the useInternetIdentity hook to handle login. After login, the auto-assignment logic in useActor will handle the claim attempt. If a super admin already exists and the current user is not the super admin, display a message like 'Super Admin has already been assigned' with no action button."
+        },
+        {
+          "path": "frontend/src/components/admin/AdminSetup.tsx",
+          "operation": "modify",
+          "description": "Add a query to check if a super admin already exists using the getSuperAdmin backend capability. Display different UI states based on: (1) No super admin exists and user is not logged in – show login button, (2) No super admin exists and user is logged in – show loading or redirect to dashboard after claim, (3) Super admin exists and current user is not super admin – show 'already assigned' message, (4) Current user is super admin – redirect to admin dashboard."
         }
       ]
     }

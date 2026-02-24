@@ -1,135 +1,77 @@
 {
   "kind": "build_request",
-  "title": "Tournament Room ID/Password System & Full Admin Editing",
+  "title": "Auto-assign super admin to first login",
   "projectName": "Tournament Khelba",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Extend the tournament data model in the backend to include the following new fields: roomId (Text), roomPassword (Text), and roomVisibilityMinutes (Nat — number of minutes before start time when room credentials become visible to players). All fields should be optional at creation and updatable at any time.",
+      "text": "Modify the backend so that when no super admin has been set yet, the first user to successfully authenticate and call any admin-check or initialization function is automatically assigned as the super admin. The super admin principal should be stored in stable state and persist across upgrades.",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-7",
-          "msg-9"
+          "msg-last"
         ],
         "quotes": [
-          "Admins will manually enter room I'd and password",
-          "Admin will configure how early it shows"
+          "I don't have the principal I'd",
+          "set up the app so that the first user to log in is automatically assigned as super admin"
         ]
       },
       "acceptanceCriteria": [
-        "Tournament record includes roomId, roomPassword, and roomVisibilityMinutes fields",
-        "Fields default to empty/null if not set at creation",
-        "Fields persist correctly across updates"
+        "If superAdmin is null/unset in backend state, the first authenticated principal to trigger the initialization path is stored as superAdmin.",
+        "Subsequent logins do not overwrite the existing superAdmin.",
+        "The assigned super admin principal persists across canister upgrades via the migration module.",
+        "isAdmin and isSuperAdmin queries return true for the automatically assigned principal."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add an updateTournament backend function that allows admins to edit all tournament fields including name, date/time, prize pool, game type, max players, roomId, roomPassword, and roomVisibilityMinutes. The function must enforce admin-only access and accept a partial or full update record.",
-      "target": "backend",
+      "text": "On the frontend, after a user logs in via Internet Identity, automatically call the backend super admin initialization endpoint. If the call succeeds and the user is now the super admin, redirect them to the admin dashboard and show a success toast indicating they have been assigned as super admin.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-7",
-          "msg-9"
+          "msg-last"
         ],
         "quotes": [
-          "Yes",
-          "every tournament can be edited anytime by admin after it is created"
+          "first user to log in is automatically assigned as super admin"
         ]
       },
       "acceptanceCriteria": [
-        "Only authenticated admins can call updateTournament",
-        "All tournament fields (including room credentials and visibility window) can be updated via a single call",
-        "Non-admin calls return an authorization error",
-        "Updated values are immediately reflected when fetching the tournament"
+        "After login, the app silently attempts to claim super admin if none exists.",
+        "If the logged-in user becomes super admin, a success toast is displayed (e.g., 'You have been assigned as Super Admin').",
+        "The admin dashboard becomes accessible immediately after auto-assignment without requiring a page refresh.",
+        "If a super admin already exists, no claim attempt UI or error is shown to regular users."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Update the migration module to handle the new roomId, roomPassword, and roomVisibilityMinutes fields on existing tournament records, defaulting them to empty strings and zero respectively.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-9"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Existing tournaments are migrated without data loss",
-        "New fields default to empty strings / 0 on existing records",
-        "Migration runs cleanly on canister upgrade"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Replace the TournamentManagementPanel's tournament creation-only form with a full tournament management UI that lists all existing tournaments and provides an Edit button for each. The edit form must include all tournament fields: name, date/time, prize pool, game type, max players, Room ID, Room Password, and a numeric field for visibility window (minutes before start). The form must submit updates via the updateTournament backend call.",
+      "text": "Update the AdminSetup page so that instead of asking the user to manually enter their principal ID, it displays an explanation that the first user to log in will automatically become super admin, with a 'Log In & Claim Super Admin' button that triggers Internet Identity login.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-7",
-          "msg-9"
+          "msg-last"
         ],
         "quotes": [
-          "every tournament can be edited anytime by admin after it is created",
-          "Admins will manually enter room I'd and password",
-          "Admin will configure how early it shows"
+          "I don't have the principal I'd"
         ]
       },
       "acceptanceCriteria": [
-        "All existing tournaments are listed in the admin panel",
-        "Each tournament has an Edit button that opens a pre-filled edit form/modal",
-        "Edit form includes Room ID, Room Password, and Visibility Window (minutes) fields",
-        "Submitting the form calls updateTournament and shows a success/error toast",
-        "The list refreshes after a successful update"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Add a React Query hook (useUpdateTournament) in useTournamentQueries.ts that calls the updateTournament backend function and invalidates the tournament list and individual tournament queries on success.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-9"
-        ]
-      },
-      "acceptanceCriteria": [
-        "useUpdateTournament mutation hook is exported from useTournamentQueries.ts",
-        "On success, tournament list and detail queries are invalidated",
-        "Loading and error states are exposed by the hook"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "In the TournamentDetailPage, implement auto-reveal logic for Room ID and Password: compare the current time against (tournament start time minus roomVisibilityMinutes). If the current time is within the visibility window AND the user is a registered participant of that tournament, display the Room ID and Room Password. Outside the window, show a countdown indicating when credentials will be revealed. If the user is not registered, do not show credentials at all.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5",
-          "msg-9"
-        ],
-        "quotes": [
-          "the room id and pass will be visible 10-15 minutes before tournament start",
-          "Admin will configure how early it shows"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Registered players see Room ID and Password once current time >= (startTime - roomVisibilityMinutes)",
-        "Before the visibility window opens, registered players see a message/countdown showing when credentials will be revealed",
-        "Non-registered users see no room credentials at any time",
-        "Room ID and Password each have a copy-to-clipboard button when visible",
-        "The reveal check updates in real time (polling or interval) without requiring a page reload"
+        "AdminSetup no longer shows a manual principal ID input field.",
+        "A clear message explains the auto-assignment behavior.",
+        "A prominent call-to-action button initiates the Internet Identity login flow.",
+        "If super admin is already assigned and the current user is not super admin, the page shows an appropriate message."
       ]
     }
   ],
   "constraints": [
-    "All Motoko logic must remain in the single backend/main.mo actor",
-    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
-    "Room ID and Password must never be visible to non-registered players regardless of timing"
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
+    "Super admin auto-assignment must only fire once — subsequent logins must never overwrite an already-set super admin.",
+    "Migration module must be updated to ensure superAdmin stable state is preserved on upgrade."
   ],
   "nonGoals": [
-    "Auto-generating Room ID or Password — admins always enter these manually",
-    "Real-time WebSocket-based reveal — polling or time-based interval is sufficient",
-    "Leaderboard, wallet, referral, or statistics features"
+    "Manual principal ID entry for super admin assignment.",
+    "Email-based authentication or identity lookup.",
+    "Adding new super admin permissions beyond what is already defined."
   ],
   "imageRequirements": {
     "required": [],

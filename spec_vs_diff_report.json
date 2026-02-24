@@ -1,46 +1,46 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-24T14:47:24.634Z",
-  "summary": "The diff implements nearly all requested requirements. REQ-1 through REQ-6 are substantially addressed: backend model extended with new fields, updateTournament function added, migration module created, TournamentManagementPanel updated with edit UI, useUpdateTournament hook added, and TournamentDetailPage has auto-reveal logic. However, there are notable gaps: REQ-3 defaults new fields to null rather than empty strings / 0 as specified; REQ-6 registration check always returns false making the reveal logic non-functional for actual players.",
+  "generatedAt": "2026-02-24T15:37:33.137Z",
+  "summary": "The diff implements most of the three requirements. REQ-1 (backend auto-assign) and REQ-3 (AdminSetup page overhaul) are largely satisfied, and REQ-2 (frontend post-login claim) is partially implemented. However, the redirect-to-admin-dashboard after auto-assignment is not evidenced in the App.tsx claim flow. The AdminSetup page no longer has a manual principal ID input and shows the correct UI per REQ-3.",
   "missing_requirements": [
     {
-      "id": "REQ-3",
-      "requirement": "New fields default to empty strings / 0 on existing records during migration",
-      "reason": "The migration module sets roomId = null, roomPassword = null, roomVisibilityMinutes = null instead of empty strings and 0 as required by the acceptance criteria.",
+      "id": "REQ-2",
+      "requirement": "If the logged-in user becomes super admin, redirect them to the admin dashboard immediately after auto-assignment without requiring a page refresh.",
+      "reason": "In App.tsx's attemptClaim flow, after a successful claim and toast, there is no router navigation call to '/admin'. Query cache is invalidated and a toast is shown, but no redirect is triggered. AdminSetup.tsx handles redirect via useEffect on isAdmin, but the App-level claim which fires for all logins does not redirect.",
       "evidence": [
-        "backend/migration.mo"
+        "frontend/src/App.tsx"
       ]
     },
     {
-      "id": "REQ-6",
-      "requirement": "Registered players see Room ID and Password once current time >= (startTime - roomVisibilityMinutes)",
-      "reason": "The useIsUserRegistered hook always returns false because no user-facing registration check endpoint is implemented, meaning no player will ever see room credentials regardless of their actual registration status.",
+      "id": "REQ-1",
+      "requirement": "isAdmin and isSuperAdmin queries return true for the automatically assigned principal.",
+      "reason": "The backend exposes getSuperAdmin and addAdmin but there is no clear evidence in the truncated backend/main.mo of public query functions named isAdmin and isSuperAdmin being present. The frontend hooks call actor.isAdmin and actor.isSuperAdmin, so if these backend functions are absent the AC would fail.",
       "evidence": [
-        "frontend/src/hooks/useTournamentQueries.ts",
-        "frontend/src/components/tournaments/TournamentDetailPage.tsx"
+        "backend/main.mo",
+        "frontend/src/hooks/useAdminQueries.ts"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Server-side maskRoomCredentials helper function in the backend actor that masks room credentials based on caller role and visibility window timing",
-      "reason": "The build request only specifies frontend-side reveal logic in REQ-6. A server-side masking function was not requested and introduces logic not described in any requirement.",
+      "description": "A dedicated useClaimSuperAdmin mutation hook that performs a two-step getSuperAdmin check then addAdmin call, with onSuccess invalidating queries and showing a toast.",
+      "reason": "The build request only asks for the frontend to call a backend super admin initialization endpoint after login. It does not specify a dedicated useClaimSuperAdmin hook. This hook is also called redundantly from both App.tsx and AdminSetup.tsx creating two separate claim paths not described in the requirements.",
       "evidence": [
-        "backend/main.mo"
+        "frontend/src/hooks/useAdminQueries.ts",
+        "frontend/src/components/admin/AdminSetup.tsx",
+        "frontend/src/App.tsx"
       ]
     }
   ],
-  "confidence": 0.82,
+  "confidence": 0.72,
   "changed_files": [
     "backend/main.mo",
     "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/admin/TournamentManagementPanel.tsx",
-    "frontend/src/components/statistics/StatisticsDashboard.tsx",
-    "frontend/src/components/tournaments/TournamentDetailPage.tsx",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/hooks/useTournamentQueries.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/components/admin/AdminSetup.tsx",
+    "frontend/src/hooks/useAdminQueries.ts",
     "project_state.json"
   ]
 }

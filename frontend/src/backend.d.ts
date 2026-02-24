@@ -108,29 +108,38 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    addAdmin(newAdmin: Principal): Promise<void>;
     approvePayment(paymentId: bigint): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     createProfile(profile: UserProfile): Promise<void>;
     createTournament(name: string, description: string, startDate: bigint, endDate: bigint, entryFee: bigint, maxParticipants: bigint, prizePool: bigint, gameType: string, roomId: string | null, roomPassword: string | null, roomVisibilityMinutes: bigint | null): Promise<bigint>;
+    deleteOrCloseTournament(id: bigint): Promise<void>;
     deleteProfile(): Promise<void>;
+    getAdmins(): Promise<Array<Principal>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getMyProfile(): Promise<UserProfile | null>;
     getStripeSessionStatus(sessionId: string): Promise<StripeSessionStatus>;
+    getSuperAdmin(): Promise<Principal | null>;
     getTournament(id: bigint): Promise<Tournament | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
+    isAdmin(principal: Principal): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     isProfileComplete(): Promise<boolean>;
     isStripeConfigured(): Promise<boolean>;
+    isSuperAdmin(principal: Principal): Promise<boolean>;
     listPaymentsByTournament(tournamentId: bigint): Promise<Array<Payment>>;
     listPendingPayments(): Promise<Array<Payment>>;
     listTournaments(): Promise<Array<Tournament>>;
     rejectPayment(paymentId: bigint): Promise<void>;
+    removeAdmin(adminToRemove: Principal): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    setRoomCredentials(tournamentId: bigint, roomId: string | null, roomPassword: string | null, roomVisibilityMinutes: bigint | null): Promise<void>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
     submitPayment(tournamentId: bigint): Promise<bigint>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
     updateProfile(profile: UserProfile): Promise<void>;
     updateTournament(update: TournamentUpdate): Promise<void>;
+    uploadResults(tournamentId: bigint, results: string): Promise<void>;
 }

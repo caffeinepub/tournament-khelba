@@ -1,9 +1,17 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import React, { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
-import { useAdminCheck, useGetUnreadNotificationCount } from '../../hooks/useQueries';
-import { Button } from '@/components/ui/button';
+import { useAdminCheck } from '../../hooks/useAdminCheck';
 import { useQueryClient } from '@tanstack/react-query';
-import { Trophy, Wallet, User, BarChart3, Shield, LogOut, Bell, Users, TrendingUp, Gift } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,131 +19,176 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
+import { Menu, Shield, LogOut, User, Wallet, Bell, Trophy } from 'lucide-react';
+import MobileNav from './MobileNav';
 
 export default function Header() {
-  const { clear, identity } = useInternetIdentity();
-  const { isAdmin } = useAdminCheck();
-  const unreadCount = useGetUnreadNotificationCount();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { identity, login, clear, loginStatus } = useInternetIdentity();
+  const { isAdmin } = useAdminCheck();
+  const queryClient = useQueryClient();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await clear();
-    queryClient.clear();
+  const isAuthenticated = !!identity;
+  const isLoggingIn = loginStatus === 'logging-in';
+
+  const handleAuth = async () => {
+    if (isAuthenticated) {
+      await clear();
+      queryClient.clear();
+    } else {
+      try {
+        await login();
+      } catch (error: unknown) {
+        const err = error as Error;
+        if (err?.message === 'User is already authenticated') {
+          await clear();
+          setTimeout(() => login(), 300);
+        }
+      }
+    }
+  };
+
+  const handleNavigate = (path: string) => {
+    navigate({ to: path });
   };
 
   return (
-    <header className="border-b border-cyan-500/20 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,255,255,0.1)]">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img 
-              src="/assets/generated/tournament-khelba-logo.dim_400x120.png" 
-              alt="Tournament Khelba" 
-              className="h-12 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]"
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          {/* Logo */}
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => handleNavigate('/')}
+          >
+            <img
+              src="/assets/generated/code11-logo.dim_200x60.png"
+              alt="Code 11"
+              className="h-8 w-auto"
             />
-          </Link>
+          </div>
 
-          <nav className="hidden md:flex items-center gap-6">
-            <Link 
-              to="/" 
-              className="text-gray-300 hover:text-cyan-400 font-semibold transition-colors flex items-center gap-2"
-            >
-              <Trophy className="h-4 w-4" />
-              Tournaments
-            </Link>
-            <Link 
-              to="/leaderboard" 
-              className="text-gray-300 hover:text-cyan-400 font-semibold transition-colors flex items-center gap-2"
-            >
-              <BarChart3 className="h-4 w-4" />
-              Leaderboard
-            </Link>
-            <Link 
-              to="/squads" 
-              className="text-gray-300 hover:text-cyan-400 font-semibold transition-colors flex items-center gap-2"
-            >
-              <Users className="h-4 w-4" />
-              My Squad
-            </Link>
-            <Link 
-              to="/wallet" 
-              className="text-gray-300 hover:text-cyan-400 font-semibold transition-colors flex items-center gap-2"
-            >
-              <Wallet className="h-4 w-4" />
-              Wallet
-            </Link>
-            {isAdmin && (
-              <Link 
-                to="/admin" 
-                className="text-orange-400 hover:text-orange-300 font-semibold transition-colors flex items-center gap-2"
-              >
-                <Shield className="h-4 w-4" />
-                Admin
-              </Link>
-            )}
-          </nav>
-
-          <div className="flex items-center gap-4">
-            <img 
-              src="/assets/generated/code11-logo.dim_200x60.png" 
-              alt="Code 11" 
-              className="h-8 hidden sm:block"
-            />
-            
-            {identity && (
-              <>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => navigate({ to: '/notifications' })}
-                  className="relative hover:bg-cyan-500/10"
+          {/* Desktop Navigation */}
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className={navigationMenuTriggerStyle()}
+                  onClick={() => handleNavigate('/')}
                 >
-                  <Bell className="h-5 w-5 text-gray-300" />
-                  {unreadCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs">
-                      {unreadCount}
-                    </Badge>
-                  )}
-                </Button>
+                  <Trophy className="w-4 h-4 mr-1" />
+                  Tournaments
+                </NavigationMenuLink>
+              </NavigationMenuItem>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="border-cyan-500/30 hover:border-cyan-500/50 hover:bg-cyan-500/10">
-                      <User className="h-4 w-4 mr-2" />
-                      Profile
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-gray-900 border-cyan-500/30">
-                    <DropdownMenuItem onClick={() => navigate({ to: '/profile' })} className="cursor-pointer">
-                      <User className="h-4 w-4 mr-2" />
-                      My Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate({ to: '/statistics' })} className="cursor-pointer">
-                      <TrendingUp className="h-4 w-4 mr-2" />
-                      Statistics
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate({ to: '/referrals' })} className="cursor-pointer">
-                      <Gift className="h-4 w-4 mr-2" />
-                      Referrals
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate({ to: '/wallet' })} className="cursor-pointer">
-                      <Wallet className="h-4 w-4 mr-2" />
-                      My Wallet
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-cyan-500/20" />
-                    <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-400">
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
+              {isAuthenticated && (
+                <>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                      onClick={() => handleNavigate('/wallet')}
+                    >
+                      <Wallet className="w-4 h-4 mr-1" />
+                      Wallet
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                      onClick={() => handleNavigate('/notifications')}
+                    >
+                      <Bell className="w-4 h-4 mr-1" />
+                      Notifications
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                </>
+              )}
+
+              {isAdmin && (
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    className={`${navigationMenuTriggerStyle()} text-neon-cyan`}
+                    onClick={() => handleNavigate('/admin')}
+                  >
+                    <Shield className="w-4 h-4 mr-1" />
+                    Admin Panel
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )}
+            </NavigationMenuList>
+          </NavigationMenu>
+
+          {/* Right side */}
+          <div className="flex items-center gap-3">
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src="/assets/generated/default-avatar.dim_200x200.png" />
+                      <AvatarFallback className="bg-neon-cyan/20 text-neon-cyan text-xs">
+                        {identity.getPrincipal().toString().slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-card border-border">
+                  <div className="px-2 py-1.5">
+                    <p className="text-xs text-muted-foreground truncate">
+                      {identity.getPrincipal().toString()}
+                    </p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleNavigate('/profile')}>
+                    <User className="w-4 h-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavigate('/wallet')}>
+                    <Wallet className="w-4 h-4 mr-2" />
+                    Wallet
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleNavigate('/admin')}>
+                        <Shield className="w-4 h-4 mr-2 text-neon-cyan" />
+                        <span className="text-neon-cyan">Admin Panel</span>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleAuth} className="text-destructive">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+                onClick={handleAuth}
+                disabled={isLoggingIn}
+                className="bg-neon-cyan text-background hover:bg-neon-cyan/90 font-semibold"
+              >
+                {isLoggingIn ? 'Logging in...' : 'Login'}
+              </Button>
             )}
+
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMobileNavOpen(true)}
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      <MobileNav open={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+    </>
   );
 }

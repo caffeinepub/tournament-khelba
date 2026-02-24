@@ -1,14 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Add a Room ID/Password system to tournaments with admin-controlled visibility timing, and enable full admin editing of all tournament fields.
+**Goal:** Automatically assign the first authenticated user as super admin, eliminating the need for manual principal ID entry.
 
 **Planned changes:**
-- Extend the tournament data model with `roomId`, `roomPassword`, and `roomVisibilityMinutes` fields (all optional, defaulting to empty/zero)
-- Add an admin-only `updateTournament` backend function that allows editing all tournament fields including the new room credential fields
-- Update the migration module to default new fields on existing tournament records
-- Replace the admin tournament creation-only panel with a full management UI listing all tournaments, each with an Edit button opening a pre-filled form (includes Room ID, Room Password, and Visibility Window fields)
-- Add a `useUpdateTournament` React Query mutation hook that calls `updateTournament` and invalidates relevant queries on success
-- In TournamentDetailPage, auto-reveal Room ID and Password to registered participants when current time is within the configured visibility window before start; show a countdown before the window opens; hide credentials entirely from non-registered users; include copy-to-clipboard buttons; update in real time via polling/interval
+- Update backend so that if no super admin is set, the first authenticated principal to call an admin-check or initialization function is automatically stored as super admin in stable state, persisting across canister upgrades.
+- Ensure subsequent logins never overwrite an already-assigned super admin.
+- After login on the frontend, silently attempt to claim super admin; if successful, show a success toast ("You have been assigned as Super Admin") and redirect to the admin dashboard.
+- Update the AdminSetup page to remove the manual principal ID input field, replacing it with an explanatory message about auto-assignment and a "Log In & Claim Super Admin" button that triggers Internet Identity login.
+- If a super admin is already assigned and the current user is not super admin, show an appropriate message on the AdminSetup page with no claim attempt.
 
-**User-visible outcome:** Admins can edit any tournament at any time including setting a Room ID and Password with a configurable reveal window. Registered participants automatically see room credentials when the visibility window opens (with a live countdown before it does), while non-registered users never see credentials.
+**User-visible outcome:** The first user to log in via Internet Identity is automatically assigned as super admin without needing to know or enter their principal ID. They are redirected to the admin dashboard immediately with a confirmation toast.

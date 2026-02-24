@@ -59,7 +59,7 @@ export default function ResultsUploadPanel() {
           ))}
         </div>
 
-        <Button 
+        <Button
           onClick={handleUpload}
           className="w-full bg-gradient-to-r from-cyan-500 to-green-500 hover:from-cyan-600 hover:to-green-600 text-gray-900 font-bold"
         >
